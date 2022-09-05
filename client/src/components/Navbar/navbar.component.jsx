@@ -1,77 +1,92 @@
-import { styled } from '@mui/material/styles'
-import { AppBar, Toolbar, Typography, Box, InputBase, Badge, Avatar, MenuItem, Menu } from "@mui/material";
-import BlindIcon from '@mui/icons-material/Blind';
-import MailIcon from '@mui/icons-material/Mail'
+import { AppBar, Grid, Typography, Box, InputBase, Badge, Avatar, MenuItem, Menu, Button, MenuList } from "@mui/material";
 import { Notifications } from '@mui/icons-material';
 import { useState } from 'react';
-
-const StyledToolbar = styled(Toolbar)({
-    display: "flex",
-    justifyContent: "space-between",
-})
-
-const Search = styled("div")(({ theme }) => ({
-    backgroundColor: 'white',
-    padding: '0 10px',
-    borderRadius: theme.shape.borderRadius,
-    width: "40%"
-}))
-const Icons = styled(Box)(({ theme }) => ({
-    display: "none",
-    alignItems: "center",
-    gap: "20px",
-    [theme.breakpoints.up("sm")]: {
-        display: "flex"
-    }
-}))
-
-const UserBox = styled(Box)(({ theme }) => ({
-    display: "none",
-    alignItems: "center",
-    gap: "20px",
-    [theme.breakpoints.down("sm")]: {
-        display: "flex"
-    }
-}))
+import { ReactComponent as Logo } from '../../assets/logo.svg';
+import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { StyledToolbar, UserBox, Search, Icons } from './navbar.styled';
+import { logout } from '../../api/auth';
 
 const Navbar = () => {
-    const [open, setOpen] = useState(false)
+    const navigate = useNavigate()
+    const currentUser = useSelector(state => state.user.currentUser)
+    const theme = useSelector(state => state.theme.mode)
+    const [avatarAnchor, setAvatarAnchor] = useState(null)
+    const [notificationAnchor, setNotificationAnchor] = useState(null)
     return (
         <AppBar position="sticky">
             <StyledToolbar>
-                <Typography variant='h6' sx={{ display: { xs: "none", sm: "block" } }} >Navbar</Typography>
-                <BlindIcon sx={{ display: { xs: "block", sm: "none" } }} />
-                <Search><InputBase bgcolor={'background.default'} color="text.primary" placeholder='Search...' /> </Search>
-                <Icons>
-                    <Badge badgeContent={4} color="error" >
-                        <MailIcon />
-                    </Badge>
-                    <Badge badgeContent={3} color="error" >
-                        <Notifications />
-                    </Badge>
-                    <Avatar onClick={() => setOpen(true)} sx={{ width: 30, height: 30 }} src="https://cdn-icons-png.flaticon.com/512/168/168882.png" />
-                </Icons>
-                <UserBox>
-                    <Avatar onClick={() => setOpen(true)} sx={{ width: 30, height: 30 }} src="https://cdn-icons-png.flaticon.com/512/168/168882.png" />
-                    <Typography variant="span" >John</Typography>
-                </UserBox>
+                {
+                    !currentUser ? (
+                        <>
+                            <Box>
+                                <Grid container onClick={() => navigate('/')} >
+                                    <Grid padding={'10px'} item>
+                                        <Logo sx={{ cursor: 'pointer' }} />
+                                    </Grid>
+                                    <Grid padding={'10px'} item>
+                                        <Typography sx={{ cursor: 'pointer' }} variant='h5' >Social Pedia</Typography>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                            <Icons>
+                                <Button variant="contained" color="error" onClick={() => navigate('/signup')} >Sign Up</Button>
+                                <Button variant="contained" color="warning" onClick={() => navigate('/login')}>Login</Button>
+                            </Icons>
+                            <UserBox>
+                                <Button variant="contained" color="error" onClick={() => navigate('/signup')} >Sign Up</Button>
+                                <Button variant="contained" color="warning" onClick={() => navigate('/login')}>Login</Button>
+                            </UserBox>
+                        </>
+                    ) : (
+                        <>
+                            <Box>
+                                <Grid container onClick={() => navigate('/')}>
+                                    <Grid padding={'10px'} item >
+                                        <Logo sx={{ cursor: 'pointer' }} />
+                                    </Grid>
+                                    <Grid padding={'10px'} sx={{ display: { xs: "none", sm: "block" } }} item>
+                                        <Typography sx={{ cursor: 'pointer' }} variant='h5' >Social Pedia</Typography>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                            <Search sx={{ backgroundColor: `${theme === 'light' ? 'white' : '#666666'}` }} ><InputBase bgcolor={'background.default'} color="text.primary" placeholder='Search...' /> </Search>
+                            <Icons>
+                                <Badge badgeContent={3} color="error" >
+                                    <Notifications onClick={(e) => setNotificationAnchor(e.currentTarget)} />
+                                </Badge>
+                                <Avatar onClick={(e) => setAvatarAnchor(e.currentTarget)} sx={{ width: 30, height: 30 }}>{currentUser.displayName.charAt(0)}</Avatar>
+                            </Icons>
+                            <UserBox>
+                                <Avatar onClick={(e) => setAvatarAnchor(e.currentTarget)} sx={{ width: 30, height: 30 }}>{currentUser.displayName.charAt(0)}</Avatar>
+                                <Typography variant="span">{currentUser.username}</Typography>
+                            </UserBox>
+                            <Menu
+                                anchorEl={avatarAnchor}
+                                onClose={() => setAvatarAnchor(null)}
+                                open={Boolean(avatarAnchor)}
+                            >
+                                <MenuItem onClick={() => navigate('/profile')} >Profile</MenuItem>
+                                <MenuItem onClick={() => logout()} >Logout</MenuItem>
+                            </Menu>
+                            <Menu
+                                anchorEl={notificationAnchor}
+                                onClose={() => setNotificationAnchor(null)}
+                                open={Boolean(notificationAnchor)}
+                            >
+                                <MenuList>
+                                    <MenuItem>
+                                        <Typography variant="inherit" noWrap>
+                                            Welcome to Social Pedia
+                                        </Typography>
+                                    </MenuItem>
+                                </MenuList>
+                            </Menu>
+                        </>
+
+                    )
+                }
             </StyledToolbar>
-            <Menu
-                open={open}
-                onClose={() => setOpen(false)}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right'
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right'
-                }}
-            >
-                <MenuItem>Profile</MenuItem>
-                <MenuItem>My Account</MenuItem>
-                <MenuItem>Logout</MenuItem>
-            </Menu>
         </AppBar>
     );
 }

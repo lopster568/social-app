@@ -1,7 +1,11 @@
 import { Typography, Box, Avatar, AvatarGroup, ImageList, ImageListItem, List, ListItem, ListItemAvatar, ListItemText, Divider } from "@mui/material";
+import { useLocation } from 'react-router-dom'
+
 const Rightbar = () => {
+    const location = useLocation()
+
     return (
-        <Box flex={2} p={2} sx={{ display: { xs: "none", sm: "block" } }} >
+        <Box flex={2} p={2} sx={{ display: { xs: "none", sm: "block" }}} >
             <Box position={"fixed"} width={300}>
                 <Typography variant='h6' fontWeight={100} >Online Friends</Typography>
                 <AvatarGroup max={7}>
