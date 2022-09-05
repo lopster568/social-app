@@ -19,6 +19,7 @@ export const registerUser = (req, res) => {
 }
 
 export const loginUser = passport.authenticate('local')
+
 export const loginCb = (req, res) => {
     res.send(req.user)
 }
@@ -28,7 +29,7 @@ export const getUser = (req, res) => {
     if (user) {
         res.send(user)
     } else {
-        res.send("USER NOT LOGGED IN")
+        res.send(null)
     }
 }
 export const updateUser = (req, res) => {
@@ -46,4 +47,11 @@ export const updateUser = (req, res) => {
         }
         console.log(err)
     })
+}
+
+export const logout = (req, res) => {
+    req.logout(function(err) {
+        if (err) { console.log(err); }
+        res.send("Successfully Logged Out!")
+      });
 }

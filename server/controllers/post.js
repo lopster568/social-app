@@ -1,4 +1,3 @@
-import mongoose from 'mongoose'
 import Post from '../models/post.js'
 import User from '../models/user.js'
 
@@ -9,14 +8,15 @@ export const getPost = (req, res) => {
     })
 }
 export const getAllPosts = (req, res) => {
-    Post.find({}, (err, posts) => {
+    Post.find({}).populate('author', 'displayName avatar').exec((err, posts) => {
         res.send(posts)
     })
 }
 export const createPost = (req, res) => {
     const newPost = {
         caption: req.body.caption,
-        img: req.body.img
+        img: req.body.img,
+        author: req.user._id
     }
     Post.create(newPost, (err, post) => {
         if (err) {
@@ -40,6 +40,7 @@ export const createPost = (req, res) => {
         });
     })
 }
+
 export const likePost = (req, res) => {
     const postId = req.params.id
     Post.findById(postId, (err, post) => {
@@ -49,6 +50,7 @@ export const likePost = (req, res) => {
         }
         post.likes.push(req.user)
         post.save((err) => {
+            console.log(req.user)
             if (!err)
                 User.findById(req.user._id, (err, user) => {
                     if (err) {
@@ -64,6 +66,7 @@ export const likePost = (req, res) => {
         });
     })
 }
+
 export const commentPost = (req, res) => {
     const postId = req.params.id
     Post.findById(postId, (err, post) => {
@@ -78,16 +81,34 @@ export const commentPost = (req, res) => {
         post.save();
     })
 }
+
 export const deletePost = (req, res) => {
     const postId = req.params.id
-    Post.findByIdAndDelete(postId, (err, deletedPost) => {
+    const userId = req.user._id
+    // /AndDelete
+    Post.findById(postId, (err, deletedPost) => {
         if (err) {
             console.log(err)
             return
         }
-        res.send("DELETED")
+        User.findById(req.user._id, (err, user) => {
+            if (!err) {
+                const filteredPosts = user.posts.filter(post => post != postId)
+                user.posts = filteredPosts
+                user.save((err, savedUser) => {
+                    if (!err) {
+                        res.send(savedUser)
+                        return
+                    }
+                    console.log(err)
+                })
+                return
+            }
+            console.log(err)
+        })
     })
 }
+
 export const updatePost = (req, res) => {
     res.send("Post Updated")
 }

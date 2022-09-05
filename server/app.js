@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 import passport from 'passport'
 import session from 'express-session'
 import User from './models/user.js'
+import cors from 'cors'
 
 // ROUTE IMPORTS----------------------------------------------------------
 import userRoutes from './routes/user.js'
@@ -12,6 +13,7 @@ import postRoutes from './routes/post.js'
 
 // CONFIGURATION----------------------------------------------------------
 const app = express()
+app.use(cors())
 const URL = 'mongodb+srv://admin:admin@ssmcluster.xscdphp.mongodb.net/?retryWrites=true&w=majority'
 app.use(session({
     secret: 'r8q,+&1LM3)CD*zAGpx1xmdsg{NeQhc;#',
@@ -24,6 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(User.createStrategy());
+app.use(bodyParser.json())
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
