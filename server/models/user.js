@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 const { Schema } = mongoose
-import passportLocalMongoose from 'passport-local-mongoose'
 
 const UserSchema = new mongoose.Schema({
     displayName: { type: String },
@@ -18,9 +17,5 @@ const UserSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId, ref: 'Post'
     }],
 })
-
-UserSchema.plugin(passportLocalMongoose, {
-    usernameField: "email"
-});
 
 export default mongoose.model("User", UserSchema);

@@ -3,11 +3,11 @@ import { useState } from "react";
 import { signUpUser } from "../../api/auth";
 import { setCurrentUser } from "../../redux/user/user.actions";
 import { useDispatch } from "react-redux";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const SignUp = () => {
     const dispatch = useDispatch()
-
+    const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [username, setUsername] = useState('')
@@ -20,7 +20,8 @@ const SignUp = () => {
                 email, password, displayName, username
             })
             const response = await user
-            dispatch(setCurrentUser(response.data))
+            dispatch(setCurrentUser(response.data.user)) 
+            navigate('/')
         } catch (err) {
             console.log(err)
         }
@@ -54,7 +55,7 @@ background-size: cover`}} >
                                     <TextField onChange={(e) => setUsername(e.target.value)} name='username' placeholder="Username" />
                                     <TextField onChange={(e) => setDisplayName(e.target.value)} name='displayName' placeholder="Name" />
                                     <TextField onChange={(e) => setEmail(e.target.value)} name='email' placeholder="Email" />
-                                    <TextField onChange={(e) => setPassword(e.target.value)} name='password' placeholder="Password" />
+                                    <TextField onChange={(e) => setPassword(e.target.value)} name='password' type={'password'} placeholder="Password" />
                                     <Button variant='outlined' type='submit' >Submit</Button>
                                 </Box>
                                 <Typography variant="p" >Already a User? </Typography>

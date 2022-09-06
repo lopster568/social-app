@@ -3,16 +3,22 @@ import { Notifications } from '@mui/icons-material';
 import { useState } from 'react';
 import { ReactComponent as Logo } from '../../assets/logo.svg';
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { StyledToolbar, UserBox, Search, Icons } from './navbar.styled';
-import { logout } from '../../api/auth';
+import { setCurrentUser } from "../../redux/user/user.actions";
 
 const Navbar = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const currentUser = useSelector(state => state.user.currentUser)
     const theme = useSelector(state => state.theme.mode)
     const [avatarAnchor, setAvatarAnchor] = useState(null)
     const [notificationAnchor, setNotificationAnchor] = useState(null)
+    const logout = () => {
+        localStorage.clear()
+        dispatch(setCurrentUser({user: null, token: null}))
+        navigate('/login')
+    }
     return (
         <AppBar position="sticky">
             <StyledToolbar>
@@ -67,7 +73,7 @@ const Navbar = () => {
                                 open={Boolean(avatarAnchor)}
                             >
                                 <MenuItem onClick={() => navigate('/profile')} >Profile</MenuItem>
-                                <MenuItem onClick={() => logout()} >Logout</MenuItem>
+                                <MenuItem onClick={logout} >Logout</MenuItem>
                             </Menu>
                             <Menu
                                 anchorEl={notificationAnchor}

@@ -1,17 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import thunk from 'redux-thunk'
 import logger from 'redux-logger'
-import postsReducer from './posts/posts.reducer'
-import userReducer from './user/user.reducers'
-import themeReducer from './theme/theme.reducers'
+import persistedReducer from './root-persist-reducer'
+import { persistStore } from 'redux-persist'
 
-const store = configureStore({
-    reducer: {
-        posts: postsReducer,
-        user: userReducer,
-        theme: themeReducer
-    },
+export const store = configureStore({
+    reducer: persistedReducer,
     middleware: [thunk, logger]
 })
 
-export default store
+export const persistor = persistStore(store)

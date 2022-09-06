@@ -3,11 +3,11 @@ import { useState } from "react";
 import { loginUser } from "../../api/auth";
 import { setCurrentUser } from "../../redux/user/user.actions";
 import { useDispatch } from "react-redux";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Login = () => {
     const dispatch = useDispatch()
-
+    const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
@@ -19,6 +19,7 @@ const Login = () => {
             })
             const response = await user
             dispatch(setCurrentUser(response.data))
+            navigate('/')
         } catch (err) {
             console.log(err)
         }

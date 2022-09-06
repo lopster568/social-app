@@ -16,17 +16,17 @@ export const createPost = (req, res) => {
     const newPost = {
         caption: req.body.caption,
         img: req.body.img,
-        author: req.user._id
+        author: req.userId._id
     }
     Post.create(newPost, (err, post) => {
         if (err) {
             console.log(err)
             return
         }
-        post.author = req.user
+        post.author = req.userId
         post.save((err, foundPost) => {
             if (!err)
-                User.findById(req.user._id, (err, user) => {
+                User.findById(req.userId._id, (err, user) => {
                     if (err) {
                         console.log(err)
                         return
@@ -41,30 +41,29 @@ export const createPost = (req, res) => {
     })
 }
 
-export const likePost = (req, res) => {
+export const likePost = async (req, res) => {
+    if (!req.userId) return res.json({ message: "NO USER" })
     const postId = req.params.id
-    Post.findById(postId, (err, post) => {
-        if (err) {
-            console.log(err)
-            return
-        }
-        post.likes.push(req.user)
-        post.save((err) => {
-            console.log(req.user)
-            if (!err)
-                User.findById(req.user._id, (err, user) => {
-                    if (err) {
-                        console.log(err)
-                        return
-                    }
-                    user.likes.push(post)
-                    user.save((err) => {
-                        if (!err)
-                            res.send("Like Added")
-                    })
-                })
-        });
-    })
+    const post = await Post.findById(postId)
+
+    const index =  post.likes.findIndex(id => id.toString() === req.userId)
+    if (index === -1) {
+        post.likes.push(req.userId)
+        post.save((err, post) => {
+            if (err) {
+                console.log(err)
+                return
+            }
+        })
+    } else {
+        post.likes = post.likes.filter(id => id.toString() !== req.userId)
+        post.save((err, post) => {
+            if (err) {
+                console.log(err)
+                return
+            }
+        })
+    }
 }
 
 export const commentPost = (req, res) => {
@@ -75,7 +74,7 @@ export const commentPost = (req, res) => {
             return
         }
         post.comments.push({
-            user: req.user,
+            user: req.userId,
             comment: req.body.comment
         })
         post.save();
@@ -84,14 +83,14 @@ export const commentPost = (req, res) => {
 
 export const deletePost = (req, res) => {
     const postId = req.params.id
-    const userId = req.user._id
+    const userId = req.userId._id
     // /AndDelete
     Post.findById(postId, (err, deletedPost) => {
         if (err) {
             console.log(err)
             return
         }
-        User.findById(req.user._id, (err, user) => {
+        User.findById(req.userId._id, (err, user) => {
             if (!err) {
                 const filteredPosts = user.posts.filter(post => post != postId)
                 user.posts = filteredPosts

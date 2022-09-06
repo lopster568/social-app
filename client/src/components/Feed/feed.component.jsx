@@ -10,12 +10,17 @@ const Feed = () => {
         dispatch(fetchPosts())
     }, [dispatch])
     const posts = useSelector(state => state.posts)
-    return(
-        <Box sx={{height: '100vh'}} flex={4} p={2}  >
+    const userId = useSelector(state => state.user.currentUser ? state.user.currentUser._id : null)
+
+    return (
+        <Box sx={{ height: '100vh' }} flex={4} p={2}  >
             {
-                posts.map(post => (
-                    <Post key={post._id} post={post} />
-                ))
+                posts.map(post => {
+                    const index = post.likes.findIndex(id => id === userId)
+                    return (
+                        <Post key={post._id} post={post} liked={(index === -1) ? false : true } />
+                    )
+                })
             }
         </Box>
     )

@@ -12,20 +12,20 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { likePost } from "../../api/post";
 
-const Post = ({ post: { img, caption, author, createdAt, _id } }) => {
+const Post = ({ post: { img, caption, author, createdAt, _id }, liked }) => {
     const [anchor, setAnchor] = useState(null)
     const userId = useSelector(state => state.user.currentUser ? state.user.currentUser._id : null)
     return (
         <Card sx={{ margin: 5 }}>
             <CardHeader
                 avatar={
-                    author.avatar ? (
+                    author?.avatar ? (
                         <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
                             R
                         </Avatar>
                     ) : (
                         <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
-                            {author.displayName.charAt(0)}
+                            {author?.displayName.charAt(0)}
                         </Avatar>
                     )
                 }
@@ -34,7 +34,7 @@ const Post = ({ post: { img, caption, author, createdAt, _id } }) => {
                         <MoreVertIcon />
                     </IconButton>
                 }
-                title={author.displayName}
+                title={author?.displayName}
                 subheader={moment(createdAt).fromNow()}
             />
             <CardMedia
@@ -50,7 +50,7 @@ const Post = ({ post: { img, caption, author, createdAt, _id } }) => {
             </CardContent>
             <CardActions disableSpacing>
                 <IconButton aria-label="add to favorites" onClick={() => likePost(_id)} >
-                    <Checkbox icon={<FavoriteOutlinedIcon />} checkedIcon={<FavoriteIcon sx={{ color: 'red' }} />} />
+                    <Checkbox icon={<FavoriteOutlinedIcon />} checkedIcon={<FavoriteIcon sx={{ color: 'red' }} />} defaultChecked={liked} />
                 </IconButton>
                 <IconButton aria-label="share">
                     <ShareIcon />
@@ -63,7 +63,7 @@ const Post = ({ post: { img, caption, author, createdAt, _id } }) => {
             >
                 <MenuList>
                     {
-                        author._id === userId ? (
+                        author?._id === userId ? (
                             <MenuList>
                                 <MenuItem>
                                     <ListItemIcon>

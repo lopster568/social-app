@@ -1,27 +1,40 @@
-import mongoose from 'mongoose'
 import User from '../models/user.js'
-import passport from 'passport'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
-export const registerUser = (req, res) => {
-    const { username, displayName, email, password } = req.body
-    const newUser = new User({
-        username, displayName, email
-    })
-    User.register(newUser, password, (err, user) => {
-        if (!err) {
-            passport.authenticate("local")(req, res, function () {
-                res.send(user)
-            })
-            return
-        }
-        console.log(err)
-    })
+export const loginUser = async (req, res) => {
+    const { email, password } = req.body
+    try {
+        const exsistingUser = await User.findOne({ email: email })
+        if (!exsistingUser) return res.status(404).json({ message: "User not found!" })
+        const isPasswordCorrect = await bcrypt.compare(password, exsistingUser.password)
+        if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid Credentials" })
+
+        const token = jwt.sign({ email: exsistingUser.email, id: exsistingUser._id }, ')H@McQfThWmZq4t7w!z%C*F-JaNdRgUk', { expiresIn: '3d' })
+        res.status(200).json({user: exsistingUser, token})
+    } catch (error) {
+        res.status(500).json(error)
+    }
 }
+export const registerUser = async (req, res) => {
+    const { username, displayName, email, password } = req.body
 
-export const loginUser = passport.authenticate('local')
+    try {
+        const exsistingUser = await User.findOne({ email })
+        if (exsistingUser) return res.status(404).json({ message: "User already exists!" })
 
-export const loginCb = (req, res) => {
-    res.send(req.user)
+        const hashedPassword = await bcrypt.hash(password, 10 )
+        const createdUser = await User.create({
+            email, displayName, username,
+            password: hashedPassword
+        })
+
+        const token = jwt.sign({ email: createdUser.email, id: createdUser._id }, ')H@McQfThWmZq4t7w!z%C*F-JaNdRgUk', { expiresIn: '3d' })
+        res.status(200).json({user: createdUser, token})
+        
+    } catch (error) {
+        res.status(500).json({error: error.message})
+    }
 }
 
 export const getUser = (req, res) => {
@@ -50,8 +63,8 @@ export const updateUser = (req, res) => {
 }
 
 export const logout = (req, res) => {
-    req.logout(function(err) {
+    req.logout(function (err) {
         if (err) { console.log(err); }
         res.send("Successfully Logged Out!")
-      });
+    });
 }
