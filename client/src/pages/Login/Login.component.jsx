@@ -39,7 +39,8 @@ background-size: cover`}} >
                     </Box>
                     <Box flex={2} p={2} sx={{ maxWidth: "438px", maxheight: '287px' }} >
                         <Card elevation={3} >
-                            <CardContent>                            <Typography variant="h3" >Login</Typography>
+                            <CardContent>                            
+                                <Typography variant="h3" >Login</Typography>
                                 <Box
                                     component="form"
                                     sx={{

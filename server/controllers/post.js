@@ -8,7 +8,7 @@ export const getPost = (req, res) => {
     })
 }
 export const getAllPosts = (req, res) => {
-    Post.find({}).populate('author', 'displayName avatar').exec((err, posts) => {
+    Post.find({}).populate('author comments.user', 'displayName avatar').exec((err, posts) => {
         res.send(posts)
     })
 }
@@ -16,14 +16,13 @@ export const createPost = (req, res) => {
     const newPost = {
         caption: req.body.caption,
         img: req.body.img,
-        author: req.userId._id
+        author: req.userId
     }
     Post.create(newPost, (err, post) => {
         if (err) {
             console.log(err)
             return
         }
-        post.author = req.userId
         post.save((err, foundPost) => {
             if (!err)
                 User.findById(req.userId._id, (err, user) => {
@@ -46,7 +45,7 @@ export const likePost = async (req, res) => {
     const postId = req.params.id
     const post = await Post.findById(postId)
 
-    const index =  post.likes.findIndex(id => id.toString() === req.userId)
+    const index = post.likes.findIndex(id => id.toString() === req.userId)
     if (index === -1) {
         post.likes.push(req.userId)
         post.save((err, post) => {
@@ -73,11 +72,23 @@ export const commentPost = (req, res) => {
             console.log(err)
             return
         }
-        post.comments.push({
-            user: req.userId,
-            comment: req.body.comment
+        User.findById(req.userId, (err, user) => {
+            if (err) {
+                console.log(err)
+                return
+            }
+            post.comments.push({
+                user: user,
+                comment: req.body.comment
+            })
+            post.save((err, post) => {
+                if (err) {
+                    res.send(err.message)
+                    return
+                }
+                res.send("Comment Added")
+            });
         })
-        post.save();
     })
 }
 

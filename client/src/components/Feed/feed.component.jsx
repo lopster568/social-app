@@ -13,7 +13,7 @@ const Feed = () => {
     const userId = useSelector(state => state.user.currentUser ? state.user.currentUser._id : null)
 
     return (
-        <Box sx={{ height: '100vh' }} flex={4} p={2}  >
+        <Box sx={{ minHeight: '100vh' }} flex={4} p={2}  >
             {
                 posts.map(post => {
                     const index = post.likes.findIndex(id => id === userId)

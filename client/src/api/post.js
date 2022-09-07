@@ -13,3 +13,4 @@ API.interceptors.request.use((req) => {
 export const getPosts = () => API.get('/post')
 export const createPost = (data) => API.post('/post', data)
 export const likePost = (postId) => API.patch(`/post/${postId}/like`)
+export const commentPost = (postId, comment) => API.patch(`/post/${postId}/comment`, comment)
