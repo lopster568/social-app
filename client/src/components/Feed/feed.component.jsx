@@ -10,8 +10,9 @@ const Feed = () => {
         dispatch(fetchPosts())
     }, [dispatch])
     const posts = useSelector(state => state.posts)
-    const userId = useSelector(state => state.user.currentUser ? state.user.currentUser._id : null)
-
+    const currentUser = useSelector(state => state.user.currentUser)
+    const userId = currentUser?._id
+    
     return (
         <Box sx={{ minHeight: '100vh' }} flex={4} p={2}  >
             {

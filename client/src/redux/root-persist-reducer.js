@@ -8,7 +8,8 @@ import storage from 'redux-persist/lib/storage'
 const rootReducer = combineReducers({
     posts: postsReducer,
     user: userReducer,
-    theme: themeReducer
+    theme: themeReducer,
+
 })
 
 const persistConfig = {

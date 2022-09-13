@@ -46,25 +46,13 @@ export const getUser = (req, res) => {
     }
 }
 export const updateUser = (req, res) => {
-    const user = req.user
-    const { field, value } = req.body
-
-    const arr = [[field, value]];
-    const mp = new Map(arr);
-    const changes = Object.fromEntries(mp);
-
-    User.findByIdAndUpdate(user._id, changes, (err, prevDoc) => {
+    const updatedUserDetails = req.body
+    console.log(updatedUserDetails)
+    User.findByIdAndUpdate(req.userId, updatedUserDetails, {new: true} ,(err, doc) => {
         if (!err) {
-            res.send("User Updated")
+            res.send(doc)
             return
         }
         console.log(err)
     })
-}
-
-export const logout = (req, res) => {
-    req.logout(function (err) {
-        if (err) { console.log(err); }
-        res.send("Successfully Logged Out!")
-    });
 }

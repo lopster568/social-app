@@ -13,6 +13,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 currentUser: action.payload.user,
                 token: action.payload.token
             }
+        case UserTypes.UPDATE_CURRENT_USER:
+            return {
+                ...state,
+                currentUser: action.payload
+            }
         default:
             return state
     }

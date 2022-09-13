@@ -10,7 +10,7 @@ const postsReducer = (state = INITIAL_STATE , action) => {
             )
         case PostTypes.CREATE_POST:
             return (
-                [...state]
+                [...state, action.payload]
             )
         default:
            return state

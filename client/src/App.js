@@ -40,7 +40,6 @@ function App() {
             <Route exact path='/signup' element={<SignUp />} />
           </Routes>
       </Box>
-
     </ThemeProvider>
   );
 }

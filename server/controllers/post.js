@@ -13,10 +13,12 @@ export const getAllPosts = (req, res) => {
     })
 }
 export const createPost = (req, res) => {
+    const tags = (req.body.tags.split(" ").join("")).split(",")
     const newPost = {
         caption: req.body.caption,
         img: req.body.img,
-        author: req.userId
+        author: req.userId,
+        tags
     }
     Post.create(newPost, (err, post) => {
         if (err) {
@@ -25,7 +27,7 @@ export const createPost = (req, res) => {
         }
         post.save((err, foundPost) => {
             if (!err)
-                User.findById(req.userId._id, (err, user) => {
+                User.findById(req.userId, (err, user) => {
                     if (err) {
                         console.log(err)
                         return
@@ -40,6 +42,32 @@ export const createPost = (req, res) => {
     })
 }
 
+export const savePost = (req, res) => {
+    const postId = req.params.id
+    Post.findById(postId, (err, post) => {
+        if (err) {
+            console.log(err)
+            return
+        }
+        User.findById(req.userId, (err, user) => {
+            if (err) {
+                console.log(err)
+                return
+            }
+            const index = user.saved_posts.findIndex(id => id.toString() === postId)
+            if (index === -1) {
+                user.saved_posts.push(post)
+                user.save((err) => {
+                    if (!err)
+                        res.send("POST SAVED")
+                })
+            } else {
+                res.send("POST ALREADY SAVED")
+            }
+        })
+    })
+}
+
 export const likePost = async (req, res) => {
     if (!req.userId) return res.json({ message: "NO USER" })
     const postId = req.params.id
@@ -48,6 +76,23 @@ export const likePost = async (req, res) => {
     const index = post.likes.findIndex(id => id.toString() === req.userId)
     if (index === -1) {
         post.likes.push(req.userId)
+        User.findById(req.userId, (err, user) => {
+            let tagIndex = null
+            post.tags.forEach(e => {
+                tagIndex = user.preferred_tags.findIndex(tag => e === tag)
+                
+                if (tagIndex === -1) {
+                    console.log(tagIndex)
+                    user.preferred_tags.push(e)
+                }
+            })
+            user.save((err, userSaved) => {
+                if (err) {
+                    console.log(err)
+                }
+                console.log(userSaved)
+            })
+        })
         post.save((err, post) => {
             if (err) {
                 console.log(err)
@@ -94,14 +139,12 @@ export const commentPost = (req, res) => {
 
 export const deletePost = (req, res) => {
     const postId = req.params.id
-    const userId = req.userId._id
-    // /AndDelete
-    Post.findById(postId, (err, deletedPost) => {
+    Post.findByIdAndDelete(postId, (err, deletedPost) => {
         if (err) {
             console.log(err)
             return
         }
-        User.findById(req.userId._id, (err, user) => {
+        User.findById(req.userId, (err, user) => {
             if (!err) {
                 const filteredPosts = user.posts.filter(post => post != postId)
                 user.posts = filteredPosts
@@ -119,6 +162,33 @@ export const deletePost = (req, res) => {
     })
 }
 
+export const getSavedPosts = (req, res) => {
+    const userId = req.userId
+    User.findById(userId).populate('saved_posts', 'img').exec((err, savedPosts) => {
+        if (err) {
+            console.log(err)
+            return
+        }
+        const data = [...savedPosts.saved_posts]
+        data.splice(9)
+        res.send(data)
+    })
+}
+
 export const updatePost = (req, res) => {
     res.send("Post Updated")
 }
+
+
+
+// export const seedPOSTS = (req, res) => {
+//     POSTSSEED.forEach(e => {
+//         Post.create(e, (err, post) => {
+//             if (err) {
+//                 console.log(err)
+//                 return
+//             }
+//             console.log("POST CREATED")
+//         })
+//     }, () => res.send("DONE"))
+// }

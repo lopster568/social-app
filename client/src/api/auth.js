@@ -15,3 +15,4 @@ API.interceptors.request.use((req) => {
 export const currentUser = () => API.get('/')
 export const loginUser = (credentials) => API.post('/login', credentials)
 export const signUpUser = (details) => API.post('/signup', details)
+export const updateUser = (details) => API.patch('/update', details)

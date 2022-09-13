@@ -13,9 +13,19 @@ const UserSchema = new mongoose.Schema({
     likes: [{
         type: Schema.Types.ObjectId, ref: 'Post'
     }],
-    posts: [{
+    preferred_tags: { type: Array, default: []},
+    saved_posts: [{
         type: Schema.Types.ObjectId, ref: 'Post'
     }],
+    settings: {
+        discoveryMode: {type: Boolean, default: true},
+        relevantContent: {type: Boolean, default: true},
+        privateAccount: {type: Boolean, default: false},
+        shyMode: {type: Boolean, default: false}
+    },
+    posts: [{
+        type: Schema.Types.ObjectId, ref: 'Post'
+    }]
 })
 
 export default mongoose.model("User", UserSchema);

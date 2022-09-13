@@ -12,8 +12,8 @@ import postRoutes from './routes/post.js'
 const app = express()
 app.use(cors())
 const URL = 'mongodb+srv://admin:admin@ssmcluster.xscdphp.mongodb.net/?retryWrites=true&w=majority'
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true, limit: '30mb' }))
+app.use(bodyParser.json({limit: '30mb'}));
 
 // SERVER-----------------------------------------------------------------
 mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {

@@ -1,30 +1,34 @@
 import { Stack, Box, TextField, Typography, Button, MenuItem, Menu } from "@mui/material";
 import { Container } from "@mui/system";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Rightbar from "../../components/Rightbar/rightbar.component";
 import Sidebar from "../../components/Sidebar/sidebar.component";
 import { StyledAvatar } from "./profile.styled";
 import FileBase from 'react-file-base64';
 import { useState } from "react";
+import { updateUser } from "../../api/auth";
+import { updateCurrentUser } from "../../redux/user/user.actions";
 
 const Profile = () => {
+    const dispatch = useDispatch()
     const { displayName, username, email, avatar } = useSelector(state => state.user.currentUser)
     const [anchor, setAnchor] = useState(null)
-    const updatedData = {
-
+    const [profileData, setProfileData] = useState(null)
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        const updatedUser = await updateUser(profileData)
+        dispatch(updateCurrentUser(updatedUser.data))
     }
     return (
         <Stack direction="row" spacing={2} justifyContent="space-between" >
             <Sidebar />
-            <Box flex={4} p={2} sx={{ width: '100vh', height: '95vh' }} >
+            <Box flex={4} p={2} sx={{ width: '100vh', height: '95vh' }} component='form' onSubmit={handleSubmit} >
                 <Container sx={{ padding: '3%' }} maxWidth='sm' >
                     <Typography mb={2} variant='h3' >Your Profile</Typography>
                     <Stack spacing={5}>
                         {
                             avatar ? (
-                                <StyledAvatar sx={{ bgcolor: "red" }} aria-label="recipe">
-                                    R
-                                </StyledAvatar>
+                                <StyledAvatar sx={{ bgcolor: "red" }} aria-label="recipe" src={avatar} />
                             ) : (
                                 <StyledAvatar sx={{ bgcolor: "red" }} aria-label="recipe">
                                     {displayName.charAt(0)}
@@ -32,11 +36,11 @@ const Profile = () => {
                             )
                         }
                         <Button variant='contained' sx={{ maxWidth: '15vh' }} onClick={(e) => setAnchor(e.currentTarget)} >Change Pic</Button>
-                        <TextField onChange={(e) => console.log(e.target.name)} label='Name' variant="outlined" sx={{ maxWidth: '30vh' }} value={displayName} name='name' />
-                        <TextField label='Username' variant="outlined" sx={{ maxWidth: '30vh' }} value={username} />
-                        <TextField label='Email' variant="outlined" sx={{ maxWidth: '30vh' }} value={email} />
+                        <TextField onChange={(e) => setProfileData({...profileData, displayName: e.target.value})} label='Name' variant="outlined" sx={{ maxWidth: '30vh' }} defaultValue={displayName} name='name' />
+                        <TextField onChange={(e) => setProfileData({...profileData, username: e.target.value})} label='Username' variant="outlined" sx={{ maxWidth: '30vh' }} defaultValue={username} />
+                        <TextField onChange={(e) => setProfileData({...profileData, email: e.target.value})} label='Email' variant="outlined" sx={{ maxWidth: '30vh' }} defaultValue={email} />
                         <TextField label='Password' variant="outlined" sx={{ maxWidth: '30vh' }} placeholder='**********' />
-                        <Button variant="outlined" sx={{ maxWidth: '30vh' }} >Save</Button>
+                        <Button type='submit' variant="outlined" sx={{ maxWidth: '30vh' }} >Save</Button>
                     </Stack>
                 </Container>
             </Box>
@@ -46,7 +50,7 @@ const Profile = () => {
                 open={Boolean(anchor)}
             >
                 <MenuItem>
-                    <FileBase type="file" multiple={false} onDone={({ base64 }) => { }} />
+                    <FileBase type="file" multiple={false} onDone={({ base64 }) => { setProfileData({...profileData, avatar: base64}) }} />
                 </MenuItem>
             </Menu>
             <Rightbar />

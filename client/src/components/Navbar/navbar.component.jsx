@@ -1,4 +1,4 @@
-import { AppBar, Grid, Typography, Box, InputBase, Badge, Avatar, MenuItem, Menu, Button, MenuList } from "@mui/material";
+import { AppBar, Grid, Typography, Box, InputBase, Badge, Avatar, MenuItem, Menu, Button, MenuList, List, ListItem, Divider, ListItemText, ListItemAvatar } from "@mui/material";
 import { Notifications } from '@mui/icons-material';
 import { useState } from 'react';
 import { ReactComponent as Logo } from '../../assets/logo.svg';
@@ -16,7 +16,7 @@ const Navbar = () => {
     const [notificationAnchor, setNotificationAnchor] = useState(null)
     const logout = () => {
         localStorage.clear()
-        dispatch(setCurrentUser({user: null, token: null}))
+        dispatch(setCurrentUser({ user: null, token: null }))
         navigate('/login')
     }
     return (
@@ -31,7 +31,7 @@ const Navbar = () => {
                                         <Logo sx={{ cursor: 'pointer' }} />
                                     </Grid>
                                     <Grid padding={'10px'} item>
-                                        <Typography sx={{ cursor: 'pointer' }} variant='h5' >Social Pedia</Typography>
+                                        <Typography sx={{ cursor: 'pointer' }} variant='h5' >Bblur</Typography>
                                     </Grid>
                                 </Grid>
                             </Box>
@@ -52,7 +52,7 @@ const Navbar = () => {
                                         <Logo sx={{ cursor: 'pointer' }} />
                                     </Grid>
                                     <Grid padding={'10px'} sx={{ display: { xs: "none", sm: "block" } }} item>
-                                        <Typography sx={{ cursor: 'pointer' }} variant='h5' >Social Pedia</Typography>
+                                        <Typography sx={{ cursor: 'pointer' }} variant='h5' >Bblur</Typography>
                                     </Grid>
                                 </Grid>
                             </Box>
@@ -61,10 +61,23 @@ const Navbar = () => {
                                 <Badge badgeContent={3} color="error" >
                                     <Notifications onClick={(e) => setNotificationAnchor(e.currentTarget)} />
                                 </Badge>
-                                <Avatar onClick={(e) => setAvatarAnchor(e.currentTarget)} sx={{ width: 30, height: 30 }}>{currentUser.displayName.charAt(0)}</Avatar>
+                                {
+                                    currentUser.avatar ? (
+                                        <Avatar onClick={(e) => setAvatarAnchor(e.currentTarget)} sx={{ width: 50, height: 50 }} src={currentUser.avatar} />
+                                    ) : (
+                                        <Avatar onClick={(e) => setAvatarAnchor(e.currentTarget)} sx={{ width: 50, height: 50 }}>{currentUser.displayName.charAt(0)}</Avatar>
+                                    )
+                                }
+
                             </Icons>
                             <UserBox>
-                                <Avatar onClick={(e) => setAvatarAnchor(e.currentTarget)} sx={{ width: 30, height: 30 }}>{currentUser.displayName.charAt(0)}</Avatar>
+                                {
+                                    currentUser.avatar ? (
+                                        <Avatar onClick={(e) => setAvatarAnchor(e.currentTarget)} sx={{ width: 50, height: 50 }} src={currentUser.avatar} />
+                                    ) : (
+                                        <Avatar onClick={(e) => setAvatarAnchor(e.currentTarget)} sx={{ width: 50, height: 50 }}>{currentUser.displayName.charAt(0)}</Avatar>
+                                    )
+                                }
                                 <Typography variant="span">{currentUser.username}</Typography>
                             </UserBox>
                             <Menu
@@ -73,6 +86,7 @@ const Navbar = () => {
                                 open={Boolean(avatarAnchor)}
                             >
                                 <MenuItem onClick={() => navigate('/profile')} >Profile</MenuItem>
+                                <MenuItem onClick={() => navigate('/')} >Saved</MenuItem>
                                 <MenuItem onClick={logout} >Logout</MenuItem>
                             </Menu>
                             <Menu
@@ -81,11 +95,38 @@ const Navbar = () => {
                                 open={Boolean(notificationAnchor)}
                             >
                                 <MenuList>
-                                    <MenuItem>
-                                        <Typography variant="inherit" noWrap>
-                                            Welcome to Social Pedia
-                                        </Typography>
-                                    </MenuItem>
+                                    <List sx={{ width: '100%', maxWidth: 360 }}>
+                                        <ListItem alignItems="flex-start">
+                                            <ListItemAvatar>
+                                                <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" />
+                                            </ListItemAvatar>
+                                            <ListItemText
+                                                primary="Brunch this weekend?"
+                                                secondary={"I'll be in your neighborhood doing errands this…"}
+                                            />
+                                        </ListItem>
+                                        <Divider variant="inset" component="li" />
+                                        <ListItem alignItems="flex-start">
+                                            <ListItemAvatar>
+                                                <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" />
+                                            </ListItemAvatar>
+                                            <ListItemText
+                                                primary="Brunch this weekend?"
+                                                secondary={"I'll be in your neighborhood doing errands this…"}
+                                            />
+                                        </ListItem>
+                                        <Divider variant="inset" component="li" />
+                                        <ListItem alignItems="flex-start">
+                                            <ListItemAvatar>
+                                                <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" />
+                                            </ListItemAvatar>
+                                            <ListItemText
+                                                primary="Brunch this weekend?"
+                                                secondary={"I'll be in your neighborhood doing errands this…"}
+                                            />
+                                        </ListItem>
+                                        <Divider variant="inset" component="li" />
+                                    </List>
                                 </MenuList>
                             </Menu>
                         </>

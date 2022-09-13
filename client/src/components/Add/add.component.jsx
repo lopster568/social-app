@@ -11,7 +11,7 @@ import { createPost } from "../../api/post";
 const Add = () => {
     const [open, setOpen] = useState(false)
     const [postData, setPostData] = useState(null)
-    const currentUser = useSelector(state => state.user.currentUser)
+    const {displayName, avatar} = useSelector(state => state.user.currentUser)
     const handleSubmit = (e) => {
         console.log("POST SUBMIT")
         e.preventDefault()
@@ -27,13 +27,19 @@ const Add = () => {
             <StyledModal
                 open={open}
                 onClose={() => setOpen(false)} >
-                <Box height={400} width={320} borderRadius={5} p={3} bgcolor={'background.default'} color={"text.primary"} >
+                <Box height={500} width={320} borderRadius={5} p={3} bgcolor={'background.default'} color={"text.primary"} >
                     <Typography variant="h6" color={"gray"} textAlign='center' >
                         Create a Post
                     </Typography>
                     <UserBox>
-                        <Avatar sx={{ width: 30, height: 30 }}>{currentUser?.displayName.charAt(0)}</Avatar>
-                        <Typography variant="span" fontWeight={500} >{currentUser?.displayName}</Typography>
+                        {
+                            avatar ? (
+                                <Avatar sx={{ width: 30, height: 30 }} src={avatar} />
+                            ) : (
+                                <Avatar sx={{ width: 30, height: 30 }}>{displayName.charAt(0)}</Avatar>
+                            )
+                        }
+                        <Typography variant="span" fontWeight={500} >{displayName}</Typography>
                     </UserBox>
                     <Box onSubmit={handleSubmit} component='form'>
                         <TextField sx={{ width: "100%" }}
@@ -50,10 +56,21 @@ const Add = () => {
                             <PersonAdd color='error' />
                         </Stack>
                         <Typography>Please Choose an Image</Typography>
-                        <FileBase type="file" multiple={false} onDone={({ base64 }) =>  setPostData({ ...postData, img: base64 })} />
+                        <FileBase type="file" multiple={false} onDone={({ base64 }) => setPostData({ ...postData, img: base64 })} />
+                        <Typography>OR</Typography>
+                        <TextField size="small" placeholder="Image link" onChange={(e) => setPostData({ ...postData, img: e.target.value })} sx={{width: "100%", mb: 2}} />
+                        <Typography>Add Tags!</Typography>
+                        <TextField sx={{ width: "100%" }}
+                            variant='standard'
+                            rows={2}
+                            multiline
+                            placeholder="Separated by commas"
+                            onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
+                        />
                         <ButtonGroup sx={{ mt: 4 }} fullWidth variant="contained" >
                             <Button sx={{ width: '90%' }} type='submit' >Post</Button>
                         </ButtonGroup>
+                        
                     </Box>
                 </Box>
             </StyledModal>

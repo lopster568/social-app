@@ -8,9 +8,14 @@ const PostSchema = new mongoose.Schema({
     likes: [{
         type: Schema.Types.ObjectId, ref: 'User'
     }],
+    preferred_tags: [{
+        type: Schema.Types.ObjectId, ref: 'User'
+    }],
+    tags: { type: Array, default: []},
     comments: [{
         user: { type: Schema.Types.ObjectId, ref: 'User' },
-        comment: String
+        comment: String,
+        createdAt: { type: Date, default: Date.now }
     }],
     createdAt: { type: Date, default: Date.now }
 })
