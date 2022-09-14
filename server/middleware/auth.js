@@ -4,7 +4,6 @@ const auth = async (req, res, next) => {
     try {
         const token = req.headers.authorization.split(" ")[1]
         const isCustomAuth = token.length < 500
-
         let decodedData
         if(token && isCustomAuth) {
             decodedData = jwt.verify(token, ')H@McQfThWmZq4t7w!z%C*F-JaNdRgUk')
@@ -16,6 +15,7 @@ const auth = async (req, res, next) => {
         next()
     } catch (error) {
         console.log(error)
+        res.status(404).json({error: error.message})
     }
 }
 export default auth
