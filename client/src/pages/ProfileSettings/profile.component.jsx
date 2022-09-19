@@ -6,7 +6,7 @@ import Sidebar from "../../components/Sidebar/sidebar.component";
 import { StyledAvatar } from "./profile.styled";
 import FileBase from 'react-file-base64';
 import { useState } from "react";
-import { updateUser } from "../../api/auth";
+import { updateUser } from "../../api/user";
 import { updateCurrentUser } from "../../redux/user/user.actions";
 
 const Profile = () => {

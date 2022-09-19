@@ -1,5 +1,5 @@
 import UserTypes from "./user.types";
-import * as api from '../../api/auth.js'
+import * as api from '../../api/user.js'
 
 export const getCurrentUser = () => async (dispatch) => {
     try {

@@ -8,7 +8,7 @@ const SettingsItem = ({ title, subtitle_1, subtitle_2, checked }) => {
                 <Typography variant='p' >{subtitle_1}<br /> {subtitle_2}</Typography>
             </Grid>
             <Grid item>
-                <Switch defaultChecked={checked} />
+                <Switch checked={checked} />
             </Grid>
         </>
     )

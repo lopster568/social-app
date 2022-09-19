@@ -5,7 +5,7 @@ import User from '../models/user.js'
 //POST GET AND SETS
 export const getPost = async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id)
+        const post = await Post.findById(req.params.id).populate('author', 'displayName avatar')
         res.status(200).json(post)
     } catch (err) {
         res.status(404).json({ message: err.message })
@@ -14,13 +14,23 @@ export const getPost = async (req, res) => {
 }
 export const getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.find({}).populate('author comments.user', 'displayName avatar')
+        const posts = await Post.find({}).sort({'createdAt': -1}).populate('author comments.user', 'displayName avatar')
         res.status(200).json(posts)
     } catch (err) {
         res.status(404).json({ message: err.message })
     }
 
 }
+
+export const getPostByUser = async (req, res) => {
+    try {
+        const posts = await Post.find({ author: req.params.id }).populate('author comments.user', 'displayName avatar')
+        res.status(200).json(posts)
+    } catch (err) {
+        res.status(404).json({ message: err.message })
+    }
+}
+
 export const createPost = async (req, res) => {
     const newPost = {
         caption: req.body.caption,
@@ -40,16 +50,29 @@ export const createPost = async (req, res) => {
 }
 
 
-export const getSavedPosts = (req, res) => {
-    const user = User.findById(req.userId).populate('saved_posts', 'img')
+export const getSavedPosts = async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).populate('saved_posts', 'img')
+        const savedPosts = [...user.saved_posts]
+        savedPosts.splice(9)
+        res.status(200).json(savedPosts)
+    } catch (err) {
+        res.status(404).json({ error: err.message })
+    }
 
-        .exec((err, savedPosts) => {
-            if (err) {
-                console.log(err)
-                return
-            }
-            const data = [...savedPosts.saved_posts]
-            data.splice(9)
-            res.send(data)
-        })
 }
+
+export const getFollowingPosts = async (req, res) => {
+    try {
+        const user = await User.findById(req.userId)
+        const posts = await Post.find({ author: { $in: user.following } }).sort({'createdAt': -1}).populate('author comments.user', 'displayName avatar')
+        res.status(200).json(posts)
+
+    } catch (err) {
+        res.status(404).json({ error: err.message })
+    }
+}
+
+//GET TRENDING TAGS
+//SORT POSTS BY MOST LIKED SLICE TO 10 POSTS 
+//EXTRACT TAGS AND RENDER

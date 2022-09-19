@@ -1,7 +1,6 @@
 import { FormControl, InputLabel, OutlinedInput, InputAdornment, CardContent, IconButton, Collapse, Box, List, ListItem, ListItemAvatar, ListItemText, Avatar, Divider, Typography } from "@mui/material";
 import { useState } from "react";
 import { commentPost } from "../../api/post";
-import AuthorHeader from "../AuthorHeader/author-header.component";
 import { useSelector } from "react-redux";
 import moment from 'moment'
 import SendIcon from '@mui/icons-material/Send';
@@ -35,7 +34,7 @@ const CommentSection = ({ comments, expanded, postId }) => {
                 </Box>
                 <List sx={{ width: '100%', maxWidth: { lg: '80%' } }}>
                     {
-                        comments.map(({ _id, user, comment, createdAt }) => {
+                        comments?.map(({ _id, user, comment, createdAt }) => {
                             return (
                                 <ListItem alignItems="flex-start" key={_id}>
                                     <ListItemAvatar>

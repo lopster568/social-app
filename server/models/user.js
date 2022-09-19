@@ -8,20 +8,24 @@ const UserSchema = new mongoose.Schema({
     password: { type: String },
     createdAt: { type: Date, default: Date.now },
     avatar: { type: String },
-    followers: { type: Array, default: [] },
-    following: { type: Array, default: [] },
+    followers: [{
+        type: Schema.Types.ObjectId, ref: 'User'
+    }],
+    following: [{
+        type: Schema.Types.ObjectId, ref: 'User'
+    }],
     likes: [{
         type: Schema.Types.ObjectId, ref: 'Post'
     }],
-    preferred_tags: { type: Array, default: []},
+    preferred_tags: { type: Array, default: [] },
     saved_posts: [{
         type: Schema.Types.ObjectId, ref: 'Post'
     }],
     settings: {
-        discoveryMode: {type: Boolean, default: true},
-        relevantContent: {type: Boolean, default: true},
-        privateAccount: {type: Boolean, default: false},
-        shyMode: {type: Boolean, default: false}
+        discoveryMode: { type: Boolean, default: true },
+        relevantContent: { type: Boolean, default: true },
+        privateAccount: { type: Boolean, default: false },
+        shyMode: { type: Boolean, default: false }
     },
     posts: [{
         type: Schema.Types.ObjectId, ref: 'Post'

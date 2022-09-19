@@ -1,6 +1,6 @@
 import { Stack, Box, Container, Typography, Card, TextField, Button, CardContent } from "@mui/material";
 import { useState } from "react";
-import { signUpUser } from "../../api/auth";
+import { signUpUser } from "../../api/user";
 import { setCurrentUser } from "../../redux/user/user.actions";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from 'react-router-dom'

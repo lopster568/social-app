@@ -1,15 +1,15 @@
 import { Avatar, CardHeader, IconButton } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-const AuthorHeader = ({ author: { displayName, avatar }, subtitle, setAnchor, noAction }) => {
+const AuthorHeader = ({ author, subtitle, setAnchor, noAction }) => {
     return (
         <CardHeader
             avatar={
-                avatar ? (
-                    <Avatar aria-label="recipe" src={avatar} />
+                author?.avatar ? (
+                    <Avatar aria-label="recipe" src={author?.avatar} />
                 ) : (
                     <Avatar sx={{ bgcolor: `red`}} aria-label="recipe">
-                        {displayName.charAt(0)}
+                        {author?.displayName?.charAt(0)}
                     </Avatar>
                 )
             }
@@ -20,7 +20,7 @@ const AuthorHeader = ({ author: { displayName, avatar }, subtitle, setAnchor, no
                     </IconButton>
                 )
             }
-            title={displayName}
+            title={author?.displayName}
             subheader={subtitle}
         />
     )

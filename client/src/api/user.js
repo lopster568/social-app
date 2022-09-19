@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-const API = axios.create({ baseURL: 'http://localhost:8000/user/' })
-
+const API = axios.create({ baseURL: 'http://localhost:8000/api/user/' })
 //HEADER AUTHORIZATION
 API.interceptors.request.use((req) => {
     const isUserStored = Boolean(localStorage.getItem('persist:root'))
@@ -16,4 +15,6 @@ API.interceptors.request.use((req) => {
 export const currentUser = () => API.get('/')
 export const loginUser = (credentials) => API.post('/login', credentials)
 export const signUpUser = (details) => API.post('/signup', details)
+export const getUser = (userId) => API.get(`/${userId}`)
 export const updateUser = (details) => API.patch('/update', details)
+export const followUser = (userToBeFollowed) => API.post(`/follow/${userToBeFollowed}`)
