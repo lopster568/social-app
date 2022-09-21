@@ -2,8 +2,7 @@ import { styled } from '@mui/material/styles'
 import { Box, Toolbar } from '@mui/material'
 
 export const StyledToolbar = styled(Toolbar)({
-    display: "flex",
-    justifyContent: "space-between",
+    display: "flex"
 })
 
 export const Search = styled("div")(({ theme }) => ({

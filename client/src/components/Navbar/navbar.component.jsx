@@ -1,4 +1,4 @@
-import { AppBar, Grid, Typography, Box, InputBase, Badge, Avatar, MenuItem, Menu, Button, MenuList, List, ListItem, Divider, ListItemText, ListItemAvatar } from "@mui/material";
+import { AppBar, Grid, Typography, Box, InputBase, Badge, Avatar, MenuItem, Menu, Button, MenuList, List, ListItem, Divider, ListItemText, ListItemAvatar, IconButton, Toolbar } from "@mui/material";
 import { Notifications } from '@mui/icons-material';
 import { useState } from 'react';
 import { ReactComponent as Logo } from '../../assets/logo.svg';
@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { StyledToolbar, UserBox, Search, Icons } from './navbar.styled';
 import { setCurrentUser } from "../../redux/user/user.actions";
-
+import AdjustIcon from '@mui/icons-material/Adjust';
+import { Stack } from "@mui/system";
 const Navbar = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -21,65 +22,36 @@ const Navbar = () => {
     }
     return (
         <AppBar position="sticky">
-            <StyledToolbar>
+            <Toolbar>
+                <IconButton size='large' edge='start' color='inherit' onClick={() => navigate('/')} >
+                    <AdjustIcon />
+                </IconButton>
+                <Typography variant='h5' sx={{ flexGrow: 1 }} >B.Blur</Typography>
                 {
                     !currentUser ? (
                         <>
-                            <Box>
-                                <Grid container onClick={() => navigate('/')} >
-                                    <Grid padding={'10px'} item>
-                                        <Logo sx={{ cursor: 'pointer' }} />
-                                    </Grid>
-                                    <Grid padding={'10px'} item>
-                                        <Typography sx={{ cursor: 'pointer' }} variant='h5' >Bblur</Typography>
-                                    </Grid>
-                                </Grid>
-                            </Box>
-                            <Icons>
-                                <Button variant="contained" color="error" onClick={() => navigate('/signup')} >Sign Up</Button>
+                            <Stack spacing={2} direction={'row'} >
                                 <Button variant="contained" color="warning" onClick={() => navigate('/login')}>Login</Button>
-                            </Icons>
-                            <UserBox>
                                 <Button variant="contained" color="error" onClick={() => navigate('/signup')} >Sign Up</Button>
-                                <Button variant="contained" color="warning" onClick={() => navigate('/login')}>Login</Button>
-                            </UserBox>
+                            </Stack>
                         </>
                     ) : (
                         <>
-                            <Box>
-                                <Grid container onClick={() => navigate('/')}>
-                                    <Grid padding={'10px'} item >
-                                        <Logo sx={{ cursor: 'pointer' }} />
-                                    </Grid>
-                                    <Grid padding={'10px'} sx={{ display: { xs: "none", sm: "block" } }} item>
-                                        <Typography sx={{ cursor: 'pointer' }} variant='h5' >Bblur</Typography>
-                                    </Grid>
-                                </Grid>
-                            </Box>
-                            <Search sx={{ backgroundColor: `${theme === 'light' ? 'white' : '#666666'}` }} ><InputBase bgcolor={'background.default'} color="text.primary" placeholder='Search...' /> </Search>
-                            <Icons>
-                                <Badge badgeContent={3} color="error" >
-                                    <Notifications onClick={(e) => setNotificationAnchor(e.currentTarget)} />
-                                </Badge>
-                                {
-                                    currentUser.avatar ? (
-                                        <Avatar onClick={(e) => setAvatarAnchor(e.currentTarget)} sx={{ width: 50, height: 50 }} src={currentUser.avatar} />
-                                    ) : (
-                                        <Avatar onClick={(e) => setAvatarAnchor(e.currentTarget)} sx={{ width: 50, height: 50 }}>{currentUser.displayName.charAt(0)}</Avatar>
-                                    )
-                                }
-
-                            </Icons>
-                            <UserBox>
-                                {
-                                    currentUser.avatar ? (
-                                        <Avatar onClick={(e) => setAvatarAnchor(e.currentTarget)} sx={{ width: 50, height: 50 }} src={currentUser.avatar} />
-                                    ) : (
-                                        <Avatar onClick={(e) => setAvatarAnchor(e.currentTarget)} sx={{ width: 50, height: 50 }}>{currentUser.displayName.charAt(0)}</Avatar>
-                                    )
-                                }
-                                <Typography variant="span">{currentUser.username}</Typography>
-                            </UserBox>
+                            <Badge badgeContent={3} color="error" sx={{mr: 2}} >
+                                <Notifications onClick={(e) => setNotificationAnchor(e.currentTarget)} />
+                            </Badge>
+                            {
+                                currentUser.avatar ? (
+                                    <IconButton onClick={(e) => setAvatarAnchor(e.currentTarget)}>
+                                        <Avatar  sx={{ width: 50, height: 50 }} src={currentUser.avatar} />
+                                    </IconButton>
+                                ) : (
+                                    <IconButton onClick={(e) => setAvatarAnchor(e.currentTarget)}>
+                                        <Avatar  sx={{ width: 50, height: 50 }}>{currentUser.displayName.charAt(0)}</Avatar>
+                                    </IconButton>
+                                )
+                            }
+                            {/* --------------------------------------------MENU STUFF------------------------------------------ */}
                             <Menu
                                 anchorEl={avatarAnchor}
                                 onClose={() => setAvatarAnchor(null)}
@@ -130,12 +102,12 @@ const Navbar = () => {
                                 </MenuList>
                             </Menu>
                         </>
-
                     )
                 }
-            </StyledToolbar>
-        </AppBar>
+            </Toolbar>
+        </AppBar >
     );
 }
 
 export default Navbar;
+

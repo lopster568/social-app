@@ -17,6 +17,11 @@ const UserSchema = new mongoose.Schema({
     likes: [{
         type: Schema.Types.ObjectId, ref: 'Post'
     }],
+    notifications: [{
+        fromUser: { type: Schema.Types.ObjectId, ref: 'User' },
+        message: String,
+        createdAt: { type: Date, default: Date.now }
+    }],
     preferred_tags: { type: Array, default: [] },
     saved_posts: [{
         type: Schema.Types.ObjectId, ref: 'Post'

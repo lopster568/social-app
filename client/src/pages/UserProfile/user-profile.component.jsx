@@ -26,48 +26,45 @@ const UserProfile = () => {
         getPostByUser(params.id).then(resp => setPosts(resp.data))
     }, [])
     return (
-        <Stack direction="row" spacing={2} justifyContent="space-between" >
-            <Sidebar />
-            <Box flex={4} p={2} sx={{ width: '100vh', height: '95vh' }} >
-                <Container sx={{ padding: '3%' }} maxWidth='sm' >
-                    <Stack spacing={5} >
-                        <Grid container spacing={4} >
-                            <Grid item >
-                                {
-                                    user?.avatar ? (
-                                        <StyledAvatar aria-label="recipe" src={user?.avatar} />
-                                    ) : (
-                                        <StyledAvatar aria-label="recipe">
-                                            {user?.displayName?.charAt(0)}
-                                        </StyledAvatar>
-                                    )
-                                }
-                            </Grid>
-                            <Grid item >
-                                <Typography mb={2} variant='h5' >{user?.username}</Typography>
-                                <Typography mb={2} variant='subtitle1' >{user?.displayName}</Typography>
-                            </Grid>
-                            <Grid item sx={{ color: "text.secondary" }} >
-                                <ListItemButton >
-                                    <Typography variant='subtitle1' >Followers: {user?.followers?.length} </Typography>
-                                </ListItemButton>
-                                <ListItemButton>
-                                    <Typography variant='subtitle1' >Following: {user?.following?.length} </Typography>
-                                </ListItemButton>
-                            </Grid>
+        <Box flex={4} p={2} sx={{ width: '100vh', height: '95vh' }} >
+            <Container sx={{ padding: '3%' }} maxWidth='sm' >
+                <Stack spacing={5} >
+                    <Grid container spacing={4} >
+                        <Grid item >
+                            {
+                                user?.avatar ? (
+                                    <StyledAvatar aria-label="recipe" src={user?.avatar} />
+                                ) : (
+                                    <StyledAvatar aria-label="recipe">
+                                        {user?.displayName?.charAt(0)}
+                                    </StyledAvatar>
+                                )
+                            }
                         </Grid>
-                        {
-                            isFollowed() ? (
-                                <Button variant="outlined" onClick={() => followUser(params.id)} >Unfollow</Button>
-                            ) : (
-                                <Button variant="contained" onClick={() => followUser(params.id)} >Follow</Button>
-                            )
-                        }
-                    </Stack>
-                    <ImageSection posts={posts} />
-                </Container>
-            </Box>
-        </Stack>
+                        <Grid item >
+                            <Typography mb={2} variant='h5' >{user?.username}</Typography>
+                            <Typography mb={2} variant='subtitle1' >{user?.displayName}</Typography>
+                        </Grid>
+                        <Grid item sx={{ color: "text.secondary" }} >
+                            <ListItemButton >
+                                <Typography variant='subtitle1' >Followers: {user?.followers?.length} </Typography>
+                            </ListItemButton>
+                            <ListItemButton>
+                                <Typography variant='subtitle1' >Following: {user?.following?.length} </Typography>
+                            </ListItemButton>
+                        </Grid>
+                    </Grid>
+                    {
+                        isFollowed() ? (
+                            <Button variant="outlined" onClick={() => followUser(params.id)} >Unfollow</Button>
+                        ) : (
+                            <Button variant="contained" onClick={() => followUser(params.id)} >Follow</Button>
+                        )
+                    }
+                </Stack>
+                <ImageSection posts={posts} />
+            </Container>
+        </Box>
     )
 }
 

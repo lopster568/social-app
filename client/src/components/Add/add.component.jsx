@@ -7,74 +7,84 @@ import { StyledModal, UserBox } from "./add.styled";
 import { useSelector } from 'react-redux'
 import FileBase from 'react-file-base64';
 import { createPost } from "../../api/post";
+import { useLocation } from "react-router";
 
 const Add = () => {
     const [open, setOpen] = useState(false)
     const [postData, setPostData] = useState(null)
-    const {displayName, avatar} = useSelector(state => state.user.currentUser)
+    const { displayName, avatar } = useSelector(state => state.user.currentUser)
     const handleSubmit = (e) => {
         console.log("POST SUBMIT")
         e.preventDefault()
         createPost(postData)
     }
+    const location = useLocation()
+    const isAuthPage = () => {
+        if (location.pathname === '/login' || location.pathname === '/signup') return true
+        return false
+    }
     return (
-        <>
-            <Tooltip title="Add" sx={{ position: "fixed", bottom: 20, left: { xs: "calc(50% - 25px)", md: 30 } }} >
-                <Fab color="primary" aria-label="Add" onClick={() => setOpen(true)}  >
-                    <AddIcon />
-                </Fab>
-            </Tooltip>
-            <StyledModal
-                open={open}
-                onClose={() => setOpen(false)} >
-                <Box height={500} width={320} borderRadius={5} p={3} bgcolor={'background.default'} color={"text.primary"} >
-                    <Typography variant="h6" color={"gray"} textAlign='center' >
-                        Create a Post
-                    </Typography>
-                    <UserBox>
-                        {
-                            avatar ? (
-                                <Avatar sx={{ width: 30, height: 30 }} src={avatar} />
-                            ) : (
-                                <Avatar sx={{ width: 30, height: 30 }}>{displayName.charAt(0)}</Avatar>
-                            )
-                        }
-                        <Typography variant="span" fontWeight={500} >{displayName}</Typography>
-                    </UserBox>
-                    <Box onSubmit={handleSubmit} component='form'>
-                        <TextField sx={{ width: "100%" }}
-                            variant='standard'
-                            rows={3}
-                            multiline
-                            placeholder="What's on Your Mind?"
-                            onChange={(e) => setPostData({ ...postData, caption: e.target.value })}
-                        />
-                        <Stack direction={"row"} gap={1} mt={2} mb={3} >
-                            <EmojiEmotions color='primary' />
-                            <Image color='secondary' />
-                            <VideoCameraBack color='success' />
-                            <PersonAdd color='error' />
-                        </Stack>
-                        <Typography>Please Choose an Image</Typography>
-                        <FileBase type="file" multiple={false} onDone={({ base64 }) => setPostData({ ...postData, img: base64 })} />
-                        <Typography>OR</Typography>
-                        <TextField size="small" placeholder="Image link" onChange={(e) => setPostData({ ...postData, img: e.target.value })} sx={{width: "100%", mb: 2}} />
-                        <Typography>Add Tags!</Typography>
-                        <TextField sx={{ width: "100%" }}
-                            variant='standard'
-                            rows={2}
-                            multiline
-                            placeholder="Separated by commas"
-                            onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
-                        />
-                        <ButtonGroup sx={{ mt: 4 }} fullWidth variant="contained" >
-                            <Button sx={{ width: '90%' }} type='submit' >Post</Button>
-                        </ButtonGroup>
-                        
+        isAuthPage() ? (
+            null
+        ) : (
+            <>
+                <Tooltip title="Add" sx={{ position: "fixed", bottom: 42, left: { xs: "calc(50% - 30px)", md: 30 } }} >
+                    <Fab color="primary" aria-label="Add" onClick={() => setOpen(true)}  >
+                        <AddIcon />
+                    </Fab>
+                </Tooltip>
+                <StyledModal
+                    open={open}
+                    onClose={() => setOpen(false)} >
+                    <Box height={500} width={320} borderRadius={5} p={3} bgcolor={'background.default'} color={"text.primary"} >
+                        <Typography variant="h6" color={"gray"} textAlign='center' >
+                            Create a Post
+                        </Typography>
+                        <UserBox>
+                            {
+                                avatar ? (
+                                    <Avatar sx={{ width: 30, height: 30 }} src={avatar} />
+                                ) : (
+                                    <Avatar sx={{ width: 30, height: 30 }}>{displayName.charAt(0)}</Avatar>
+                                )
+                            }
+                            <Typography variant="span" fontWeight={500} >{displayName}</Typography>
+                        </UserBox>
+                        <Box onSubmit={handleSubmit} component='form'>
+                            <TextField sx={{ width: "100%" }}
+                                variant='standard'
+                                rows={3}
+                                multiline
+                                placeholder="What's on Your Mind?"
+                                onChange={(e) => setPostData({ ...postData, caption: e.target.value })}
+                            />
+                            <Stack direction={"row"} gap={1} mt={2} mb={3} >
+                                <EmojiEmotions color='primary' />
+                                <Image color='secondary' />
+                                <VideoCameraBack color='success' />
+                                <PersonAdd color='error' />
+                            </Stack>
+                            <Typography>Please Choose an Image</Typography>
+                            <FileBase type="file" multiple={false} onDone={({ base64 }) => setPostData({ ...postData, img: base64 })} />
+                            <Typography>OR</Typography>
+                            <TextField size="small" placeholder="Image link" onChange={(e) => setPostData({ ...postData, img: e.target.value })} sx={{ width: "100%", mb: 2 }} />
+                            <Typography>Add Tags!</Typography>
+                            <TextField sx={{ width: "100%" }}
+                                variant='standard'
+                                rows={2}
+                                multiline
+                                placeholder="Separated by commas"
+                                onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
+                            />
+                            <ButtonGroup sx={{ mt: 4 }} fullWidth variant="contained" >
+                                <Button sx={{ width: '90%' }} type='submit' >Post</Button>
+                            </ButtonGroup>
+
+                        </Box>
                     </Box>
-                </Box>
-            </StyledModal>
-        </>
+                </StyledModal>
+            </>
+        )
     );
 }
 

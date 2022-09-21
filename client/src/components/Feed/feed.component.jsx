@@ -7,7 +7,7 @@ const Feed = ({posts}) => {
     const userId = currentUser?._id
 
     return (
-        <Box sx={{ minHeight: '100vh' }} flex={4} p={2}  >
+        <Box sx={{ minHeight: '100vh'}} m={0} flex={4} p={2}  >
             {
                 posts.map(post => {
                     const index = post.likes.findIndex(id => id === userId)

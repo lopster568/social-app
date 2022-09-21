@@ -8,7 +8,7 @@ import Rightbar from "../../components/Rightbar/rightbar.component";
 import Sidebar from "../../components/Sidebar/sidebar.component";
 import Add from "../../components/Add/add.component";
 
-function PostViewEdit({edit}) {
+function PostViewEdit({ edit }) {
     const params = useParams()
     const [postData, setPostData] = useState([])
     useEffect(() => {
@@ -16,10 +16,8 @@ function PostViewEdit({edit}) {
     }, [])
 
     return (
-        <Stack direction="row" spacing={2} justifyContent="space-between" >
-            <Sidebar />
-            <Box flex={4} p={2} sx={{ width: '100%', height: '95vh' }} >
-                <Container sx={{ padding: '3%' }} maxWidth='sm' >
+        <Box flex={4} p={2} sx={{ width: '100%', height: '95vh' }} >
+            <Container sx={{ padding: '3%' }} maxWidth='sm' >
                 {
                     edit ? (
                         <Post post={postData} edit={true} />
@@ -27,11 +25,8 @@ function PostViewEdit({edit}) {
                         <Post post={postData} />
                     )
                 }
-                </Container>
-            </Box>
-            <Rightbar />
-            <Add />
-        </Stack>
+            </Container>
+        </Box>
     );
 }
 

@@ -1,26 +1,33 @@
-import { Stack } from "@mui/material";
-import Rightbar from "../../components/Rightbar/rightbar.component";
-import Sidebar from "../../components/Sidebar/sidebar.component";
-import Add from "../../components/Add/add.component";
 import Feed from "../../components/Feed/feed.component";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getFeedPosts } from '../../api/post.js'
+import { toggleLoading } from "../../redux/post-loading/post-loading.actions";
+import PostLoadingSkeleton from "../../components/PostLoadingSkeleton/post-loading-skeleton.component";
+
+
 
 const Home = () => {
     const [posts, setPosts] = useState([])
+    const dispatch = useDispatch()
+    const isLoading = useSelector(state => state.post_loading)
+
     useEffect(() => {
-        getFeedPosts().then(resp => setPosts(resp.data))
+        getFeedPosts().then(resp => {
+            setPosts(resp.data)
+            dispatch(toggleLoading())
+        })
+        return () => {
+            dispatch(toggleLoading())
+        } 
     }, [])
 
-    const currentUser = useSelector(state => state.user.currentUser)
     return (
-        <Stack direction="row" spacing={2} justifyContent="space-between" >
-            <Sidebar />
+        isLoading ? (
+            <PostLoadingSkeleton />
+        ) : (
             <Feed posts={posts} />
-            <Rightbar />
-            <Add />
-        </Stack>
+        )
     );
 }
 

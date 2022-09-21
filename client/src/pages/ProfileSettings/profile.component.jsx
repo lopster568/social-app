@@ -1,8 +1,6 @@
 import { Stack, Box, TextField, Typography, Button, MenuItem, Menu } from "@mui/material";
 import { Container } from "@mui/system";
 import { useDispatch, useSelector } from "react-redux";
-import Rightbar from "../../components/Rightbar/rightbar.component";
-import Sidebar from "../../components/Sidebar/sidebar.component";
 import { StyledAvatar } from "./profile.styled";
 import FileBase from 'react-file-base64';
 import { useState } from "react";
@@ -20,9 +18,8 @@ const Profile = () => {
         dispatch(updateCurrentUser(updatedUser.data))
     }
     return (
-        <Stack direction="row" spacing={2} justifyContent="space-between" >
-            <Sidebar />
-            <Box flex={4} p={2} sx={{ width: '100vh', height: '95vh' }} component='form' onSubmit={handleSubmit} >
+        <>
+            <Box flex={4} p={2} sx={{ width: '100vh', mb: 20 }} component='form' onSubmit={handleSubmit} >
                 <Container sx={{ padding: '3%' }} maxWidth='sm' >
                     <Typography mb={2} variant='h3' >Your Profile</Typography>
                     <Stack spacing={5}>
@@ -35,10 +32,10 @@ const Profile = () => {
                                 </StyledAvatar>
                             )
                         }
-                        <Button variant='contained' sx={{ maxWidth: '15vh' }} onClick={(e) => setAnchor(e.currentTarget)} >Change Pic</Button>
-                        <TextField onChange={(e) => setProfileData({...profileData, displayName: e.target.value})} label='Name' variant="outlined" sx={{ maxWidth: '30vh' }} defaultValue={displayName} name='name' />
-                        <TextField onChange={(e) => setProfileData({...profileData, username: e.target.value})} label='Username' variant="outlined" sx={{ maxWidth: '30vh' }} defaultValue={username} />
-                        <TextField onChange={(e) => setProfileData({...profileData, email: e.target.value})} label='Email' variant="outlined" sx={{ maxWidth: '30vh' }} defaultValue={email} />
+                        <Button variant='contained' sx={{ maxWidth: '20vh' }} onClick={(e) => setAnchor(e.currentTarget)} >Change Pic</Button>
+                        <TextField onChange={(e) => setProfileData({ ...profileData, displayName: e.target.value })} label='Name' variant="outlined" sx={{ maxWidth: '30vh' }} defaultValue={displayName} name='name' />
+                        <TextField onChange={(e) => setProfileData({ ...profileData, username: e.target.value })} label='Username' variant="outlined" sx={{ maxWidth: '30vh' }} defaultValue={username} />
+                        <TextField onChange={(e) => setProfileData({ ...profileData, email: e.target.value })} label='Email' variant="outlined" sx={{ maxWidth: '30vh' }} defaultValue={email} />
                         <TextField label='Password' variant="outlined" sx={{ maxWidth: '30vh' }} placeholder='**********' />
                         <Button type='submit' variant="outlined" sx={{ maxWidth: '30vh' }} >Save</Button>
                     </Stack>
@@ -50,11 +47,10 @@ const Profile = () => {
                 open={Boolean(anchor)}
             >
                 <MenuItem>
-                    <FileBase type="file" multiple={false} onDone={({ base64 }) => { setProfileData({...profileData, avatar: base64}) }} />
+                    <FileBase type="file" multiple={false} onDone={({ base64 }) => { setProfileData({ ...profileData, avatar: base64 }) }} />
                 </MenuItem>
             </Menu>
-            <Rightbar />
-        </Stack>
+        </>
     );
 }
 

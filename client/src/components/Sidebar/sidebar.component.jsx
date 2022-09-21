@@ -13,58 +13,68 @@ const Sidebar = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const theme = useSelector(state => state.theme)
+    const location = useLocation()
+    const isAuthPage = () => {
+        if (location.pathname === '/login' ||  location.pathname === '/signup' ) return true
+        return false
+    }
     return (
-        <Box flex={1} p={2} sx={{ display: { xs: "none", sm: "block" }}} >
-            <Box position={"fixed"}>
-                <List>
-                    <ListItem disablePadding>
-                        <ListItemButton component='a' onClick={() => navigate('/')} >
-                            <ListItemIcon>
-                                <HomeIcon />
-                            </ListItemIcon>
-                            <ListItemText primary='Feed' />
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding>
-                        <ListItemButton component='a' onClick={() => navigate('/discover')} >
-                            <ListItemIcon>
-                                <ExploreIcon />
-                            </ListItemIcon>
-                            <ListItemText primary='Discover' />
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding>
-                        <ListItemButton component='a' onClick={() => navigate('/circle')} >
-                            <ListItemIcon>
-                                <PeopleIcon />
-                            </ListItemIcon>
-                            <ListItemText primary='Social Circle' />
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding>
-                        <ListItemButton component='a' onClick={() => navigate('/settings')} >
-                            <ListItemIcon>
-                                <SettingsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary='Settings' />
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding>
-                        <ListItemButton component='a'>
-                            <ListItemIcon>
-                                <ModeNight />
-                            </ListItemIcon>
-                            <Switch onChange={() => dispatch(toggleTheme())} checked={theme.mode === 'dark' ? true : false} />
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding>
-                        <ListItemButton component='a' onClick={() => navigate('/about')} >
-                            <ListItemText primary='About Us' />
-                        </ListItemButton>
-                    </ListItem>
-                </List>
+        isAuthPage() ? (
+            null
+        ) :
+            (
+                <Box flex={1} p={2} sx={{ display: { xs: "none", sm: "block" } }} >
+                <Box position={"fixed"}>
+                    <List>
+                        <ListItem disablePadding>
+                            <ListItemButton component='a' onClick={() => navigate('/')} >
+                                <ListItemIcon>
+                                    <HomeIcon />
+                                </ListItemIcon>
+                                <ListItemText primary='Feed' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton component='a' onClick={() => navigate('/discover')} >
+                                <ListItemIcon>
+                                    <ExploreIcon />
+                                </ListItemIcon>
+                                <ListItemText primary='Discover' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton component='a' onClick={() => navigate('/circle')} >
+                                <ListItemIcon>
+                                    <PeopleIcon />
+                                </ListItemIcon>
+                                <ListItemText primary='Social Circle' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton component='a' onClick={() => navigate('/settings')} >
+                                <ListItemIcon>
+                                    <SettingsIcon />
+                                </ListItemIcon>
+                                <ListItemText primary='Settings' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton component='a'>
+                                <ListItemIcon>
+                                    <ModeNight />
+                                </ListItemIcon>
+                                <Switch onChange={() => dispatch(toggleTheme())} checked={theme.mode === 'dark' ? true : false} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton component='a' onClick={() => navigate('/about')} >
+                                <ListItemText primary='About Us' />
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                </Box>
             </Box>
-        </Box>
+            )
     );
 }
 

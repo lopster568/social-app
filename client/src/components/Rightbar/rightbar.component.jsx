@@ -1,6 +1,6 @@
 import { Typography, Box, Avatar, AvatarGroup, ImageList, ImageListItem, List, ListItem, ListItemAvatar, ListItemText, Divider, ListItemButton } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { getSavedPosts } from '../../api/post.js'
 import { TagLink } from "./rightbar.styled.jsx";
 
@@ -10,8 +10,17 @@ const Rightbar = () => {
     useEffect(() => {
         getSavedPosts().then(data => setSavedPosts(data.data))
     }, [])
+    const location = useLocation()
+    const isAuthPage = () => {
+        
+        if (location.pathname === '/login' || location.pathname === '/signup' ) return true
+        return false
+    }
     return (
-        <Box flex={2} p={2} sx={{ display: { xs: "none", sm: "block" } }} >
+        isAuthPage() ? (
+            null
+        ) : (
+            <Box flex={2} p={2} sx={{ display: { xs: "none", sm: "block" } }} >
             <Box position={"fixed"} width={300}>
                 <Typography variant='h6' fontWeight={100} >Trending Tags 🔥</Typography>
                 <TagLink to='/' >#this </TagLink>
@@ -40,6 +49,8 @@ const Rightbar = () => {
                 <Typography variant='h6' fontWeight={100} >Activities</Typography>
             </Box>
         </Box>
+        )
+        
     );
 }
 
