@@ -12,7 +12,7 @@ import { useLocation } from "react-router";
 const Add = () => {
     const [open, setOpen] = useState(false)
     const [postData, setPostData] = useState(null)
-    const { displayName, avatar } = useSelector(state => state.user.currentUser)
+    const currentUser = useSelector(state => state.user.currentUser)
     const handleSubmit = (e) => {
         console.log("POST SUBMIT")
         e.preventDefault()
@@ -42,13 +42,13 @@ const Add = () => {
                         </Typography>
                         <UserBox>
                             {
-                                avatar ? (
-                                    <Avatar sx={{ width: 30, height: 30 }} src={avatar} />
+                                currentUser.avatar ? (
+                                    <Avatar sx={{ width: 30, height: 30 }} src={currentUser.avatar} />
                                 ) : (
-                                    <Avatar sx={{ width: 30, height: 30 }}>{displayName.charAt(0)}</Avatar>
+                                    <Avatar sx={{ width: 30, height: 30 }}>{currentUser.displayName.charAt(0)}</Avatar>
                                 )
                             }
-                            <Typography variant="span" fontWeight={500} >{displayName}</Typography>
+                            <Typography variant="span" fontWeight={500} >{currentUser.displayName}</Typography>
                         </UserBox>
                         <Box onSubmit={handleSubmit} component='form'>
                             <TextField sx={{ width: "100%" }}
