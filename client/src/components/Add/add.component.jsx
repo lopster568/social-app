@@ -5,7 +5,7 @@ import { Stack } from "@mui/system";
 import { EmojiEmotions, VideoCameraBack, Image, PersonAdd, DateRange } from "@mui/icons-material";
 import { StyledModal, UserBox } from "./add.styled";
 import { useSelector } from 'react-redux'
-import FileBase from 'react-file-base64';
+import { IKContext, IKUpload } from 'imagekitio-react';
 import { createPost } from "../../api/post";
 import { useLocation } from "react-router";
 
@@ -43,9 +43,9 @@ const Add = () => {
                         <UserBox>
                             {
                                 currentUser.avatar ? (
-                                    <Avatar sx={{ width: 30, height: 30 }} src={currentUser.avatar} />
+                                    <Avatar sx={{ width: 30, height: 30 }} src={currentUser.avatar} alt={currentUser.displayName} />
                                 ) : (
-                                    <Avatar sx={{ width: 30, height: 30 }}>{currentUser.displayName.charAt(0)}</Avatar>
+                                    <Avatar sx={{ width: 30, height: 30 }} alt={currentUser.displayName} >{currentUser.displayName.charAt(0)}</Avatar>
                                 )
                             }
                             <Typography variant="span" fontWeight={500} >{currentUser.displayName}</Typography>
@@ -65,7 +65,17 @@ const Add = () => {
                                 <PersonAdd color='error' />
                             </Stack>
                             <Typography>Please Choose an Image</Typography>
-                            <FileBase type="file" multiple={false} onDone={({ base64 }) => setPostData({ ...postData, img: base64 })} />
+                            <IKContext
+                                publicKey={'public_RR6bfJBYwkidUbZcaYUvdNfv2Ow='}
+                                urlEndpoint={'https://ik.imagekit.io/xcuqahb2st38'}
+                                authenticationEndpoint={"http://localhost:8000/api/auth"}
+                            >
+                                <IKUpload
+                                    fileName="test-upload.png"
+                                    onError={(err) => console.log(err)}
+                                    onSuccess={(res) => setPostData({...postData, img: res.url })}
+                                />
+                            </IKContext>
                             <Typography>OR</Typography>
                             <TextField size="small" placeholder="Image link" onChange={(e) => setPostData({ ...postData, img: e.target.value })} sx={{ width: "100%", mb: 2 }} />
                             <Typography>Add Tags!</Typography>

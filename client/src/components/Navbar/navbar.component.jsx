@@ -43,11 +43,11 @@ const Navbar = () => {
                             {
                                 currentUser.avatar ? (
                                     <IconButton onClick={(e) => setAvatarAnchor(e.currentTarget)}>
-                                        <Avatar  sx={{ width: 50, height: 50 }} src={currentUser.avatar} />
+                                        <Avatar  alt={currentUser.displayName}  sx={{ width: 50, height: 50 }} src={currentUser.avatar} />
                                     </IconButton>
                                 ) : (
                                     <IconButton onClick={(e) => setAvatarAnchor(e.currentTarget)}>
-                                        <Avatar  sx={{ width: 50, height: 50 }}>{currentUser.displayName.charAt(0)}</Avatar>
+                                        <Avatar alt={currentUser.displayName}  sx={{ width: 50, height: 50 }}>{currentUser.displayName.charAt(0)}</Avatar>
                                     </IconButton>
                                 )
                             }

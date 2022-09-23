@@ -4,6 +4,7 @@ import { getPosts } from '../../api/post.js'
 import { useDispatch, useSelector } from "react-redux";
 import { toggleLoading } from "../../redux/post-loading/post-loading.actions";
 import PostLoadingSkeleton from "../../components/PostLoadingSkeleton/post-loading-skeleton.component";
+import { setAlert } from "../../redux/alert/alert.actions";
 
 const Discover = () => {
     const dispatch = useDispatch()

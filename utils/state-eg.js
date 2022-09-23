@@ -10,5 +10,6 @@ const state = {
     discoveryPost: [],
     navbarAnchor: {},
     notifications: [{}],
-    isMobile: true
+    isMobile: true,
+    alert: "" 
 }

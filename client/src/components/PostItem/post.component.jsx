@@ -45,6 +45,7 @@ const Post = ({ post, liked, edit }) => {
                 <>
                     <AuthorHeader author={post?.author} subtitle={moment(post?.createdAt).fromNow()} setAnchor={setPostAnchor} />
                     <CardMedia
+                        loading="lazy"
                         component="img"
                         height="20%"
                         image={post?.img}
@@ -99,7 +100,7 @@ const Post = ({ post, liked, edit }) => {
                         {
                             deleteConfirmation ? (
                                 <MenuList>
-                                    <PopMenuItem menuItemName={"Confirm"} sx={{ backgroundColor: "red" }} clickHandler={() => { deletePost() }} icon={<CheckCircleIcon sx={{ color: "green" }} />} />
+                                    <PopMenuItem menuItemName={"Confirm"} sx={{ backgroundColor: "red" }} clickHandler={() => { deletePost(post?._id) }} icon={<CheckCircleIcon sx={{ color: "green" }} />} />
                                     <PopMenuItem menuItemName={"Cancel"} clickHandler={() => setDeleteConfirmation(false)} icon={<CancelIcon sx={{ color: "red" }} />} />
                                 </MenuList>
                             ) : (

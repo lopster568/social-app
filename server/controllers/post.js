@@ -39,9 +39,9 @@ export const createPost = async (req, res) => {
         tags: (req.body.tags.split(" ").join("")).split(",")
     }
     try {
-        await Post.create(newPost)
+        const createdPost = await Post.create(newPost)
         const user = await User.findById(req.userId)
-        user.posts.push(foundPost)
+        user.posts.push(createdPost)
         const savedPost = await user.save()
         res.status(200).json(savedPost)
     } catch (err) {

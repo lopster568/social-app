@@ -6,9 +6,9 @@ const AuthorHeader = ({ author, subtitle, setAnchor, noAction }) => {
         <CardHeader
             avatar={
                 author?.avatar ? (
-                    <Avatar aria-label="recipe" src={author?.avatar} />
+                    <Avatar alt={"User Avatar"} src={author?.avatar} />
                 ) : (
-                    <Avatar sx={{ bgcolor: `red`}} aria-label="recipe">
+                    <Avatar sx={{ bgcolor: `red`}} alt={"User Avatar"}>
                         {author?.displayName?.charAt(0)}
                     </Avatar>
                 )

@@ -6,6 +6,7 @@ import { combineReducers } from 'redux'
 import storage from 'redux-persist/lib/storage'
 import postLoadingReducer from './post-loading/post-loading.reducer'
 import settingsReducer from './settings/settings.reducer'
+import alertReducer from './alert/alert.reducer'
 
 
 const rootReducer = combineReducers({
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
     theme: themeReducer,
     notifcations: notificationsReducer,
     post_loading: postLoadingReducer,
-    settings: settingsReducer
+    settings: settingsReducer,
+    alert: alertReducer
 })
 
 const persistConfig = {

@@ -38,7 +38,7 @@ const CommentSection = ({ comments, expanded, postId }) => {
                             return (
                                 <ListItem alignItems="flex-start" key={_id}>
                                     <ListItemAvatar>
-                                        <Avatar alt="Remy Sharp" src={user.avatar} />
+                                        <Avatar alt={"Comment Author"} src={user.avatar} />
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary={user.displayName}
