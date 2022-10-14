@@ -32,21 +32,22 @@ export const getPostByUser = async (req, res) => {
 }
 
 export const createPost = async (req, res) => {
-    const newPost = {
-        caption: req.body.caption,
-        img: req.body.img,
-        author: req.userId,
-        tags: (req.body.tags.split(" ").join("")).split(",")
-    }
-    try {
-        const createdPost = await Post.create(newPost)
-        const user = await User.findById(req.userId)
-        user.posts.push(createdPost)
-        const savedPost = await user.save()
-        res.status(200).json(savedPost)
-    } catch (err) {
-        res.status(500).json({ message: err.message })
-    }
+    console.log(req.file)
+    // const newPost = {
+    //     caption: req.body.caption,
+    //     img: req.body.img,
+    //     author: req.userId,
+    //     tags: (req.body.tags.split(" ").join("")).split(",")
+    // }
+    // try {
+    //     const createdPost = await Post.create(newPost)
+    //     const user = await User.findById(req.userId)
+    //     user.posts.push(createdPost)
+    //     const savedPost = await user.save()
+    //     res.status(200).json(savedPost)
+    // } catch (err) {
+    //     res.status(500).json({ message: err.message })
+    // }
 }
 
 

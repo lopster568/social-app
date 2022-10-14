@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import { IKContext, IKUpload } from 'imagekitio-react';
 import { createPost } from "../../api/post";
 import { useLocation } from "react-router";
+import axios from "axios";
 
 const Add = () => {
     const [open, setOpen] = useState(false)
@@ -15,8 +16,10 @@ const Add = () => {
     const currentUser = useSelector(state => state.user.currentUser)
     const handleSubmit = (e) => {
         console.log("POST SUBMIT")
-        e.preventDefault()
-        createPost(postData)
+        const data = new FormData()
+        data.append("img" , postData.img)
+        axios.post("https://httpbin.org/anything", postData).then(res => console.log(res).catch(err => console.log(err)))
+        // createPost(postData)
     }
     const location = useLocation()
     const isAuthPage = () => {
@@ -50,7 +53,7 @@ const Add = () => {
                             }
                             <Typography variant="span" fontWeight={500} >{currentUser.displayName}</Typography>
                         </UserBox>
-                        <Box onSubmit={handleSubmit} component='form'>
+                        <Box component='form'>
                             <TextField sx={{ width: "100%" }}
                                 variant='standard'
                                 rows={3}
@@ -65,7 +68,11 @@ const Add = () => {
                                 <PersonAdd color='error' />
                             </Stack>
                             <Typography>Please Choose an Image</Typography>
-                            <IKContext
+                            <Button variant="contained" component="label">
+                                Upload
+                                <input onChange={(e) => setPostData({...postData, img: e.target.files[0]  }) } hidden accept="image/*" type="file" />
+                            </Button>
+                            {/* <IKContext
                                 publicKey={'public_RR6bfJBYwkidUbZcaYUvdNfv2Ow='}
                                 urlEndpoint={'https://ik.imagekit.io/xcuqahb2st38'}
                                 authenticationEndpoint={"http://localhost:8000/api/auth"}
@@ -75,7 +82,7 @@ const Add = () => {
                                     onError={(err) => console.log(err)}
                                     onSuccess={(res) => setPostData({...postData, img: res.url })}
                                 />
-                            </IKContext>
+                            </IKContext> */}
                             <Typography>OR</Typography>
                             <TextField size="small" placeholder="Image link" onChange={(e) => setPostData({ ...postData, img: e.target.value })} sx={{ width: "100%", mb: 2 }} />
                             <Typography>Add Tags!</Typography>
@@ -87,7 +94,7 @@ const Add = () => {
                                 onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
                             />
                             <ButtonGroup sx={{ mt: 4 }} fullWidth variant="contained" >
-                                <Button sx={{ width: '90%' }} type='submit' >Post</Button>
+                                <Button sx={{ width: '90%' }} type='submit' onClick={handleSubmit} >Post</Button>
                             </ButtonGroup>
 
                         </Box>

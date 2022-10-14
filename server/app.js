@@ -4,10 +4,13 @@ import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import ImageKit from 'imagekit'
+import { spawn } from 'child_process'
+import multer from 'multer'
 
 // ROUTE IMPORTS----------------------------------------------------------
 import userRoutes from './routes/user.js'
 import postRoutes from './routes/post.js'
+
 
 // CONFIGURATION----------------------------------------------------------
 const app = express()
@@ -49,3 +52,35 @@ mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true }, (err)
 // ROUTES-----------------------------------------------------------------
 app.use('/api/user', userRoutes)
 app.use('/api/post', postRoutes)
+
+
+// MULTER--------------------------------------------------------------------
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cd(null, './utils/image')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalName)
+    }
+})
+
+const upload = multer({
+    storage: storage
+})
+
+//PYTHON---------------------------------------------------------------------
+app.get("/python", upload.single("postImg ") ,(req, res) => {
+    console.log(req.file)
+
+    var data;
+    const python = spawn('python3', ['./utils/blur-recognization.py'])
+    python.stdout.on('data', (returnedData) => {
+        console.log('pipe data from script')
+        data = returnedData.toString()
+    })
+    python.on('close', (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        // send data to browser
+        res.send(data)
+    });
+})
