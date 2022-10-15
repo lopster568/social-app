@@ -55,7 +55,7 @@ export const commentPost = async (req, res) => {
             user: user,
             comment: req.body.comment
         })
-        await post.save()
+        const commentedPost = await post.save()
     } catch (err) {
         res.status(500).json({ message: err.message })
     }

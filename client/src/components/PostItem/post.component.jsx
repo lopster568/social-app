@@ -1,6 +1,6 @@
 import { Card, CardActions, CardContent, CardMedia, IconButton, Checkbox, Menu, MenuList, Typography, Button, TextField, Skeleton, Grid, CardHeader } from "@mui/material";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deletePost, likePost } from "../../api/post";
 import AuthorHeader from "../AuthorHeader/author-header.component";
 import CommentSection from "../CommentSection/comment-section.component";
@@ -23,6 +23,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { styled } from '@mui/material/styles'
+import { setAlert } from "../../redux/alert/alert.actions";
 
 const StyledCard = styled(Card)(({ theme }) => ({
     [theme.breakpoints.down("md")]: {
@@ -35,7 +36,7 @@ const Post = ({ post, liked, edit }) => {
     const [expanded, setExpanded] = useState(false)
     const [editPostData, setEditPostData] = useState({})
     const [deleteConfirmation, setDeleteConfirmation] = useState(false)
-
+    const dispatch = useDispatch()
     const userId = useSelector(state => state.user.currentUser ? state.user.currentUser._id : null)
 
     const navigate = useNavigate()
@@ -43,7 +44,7 @@ const Post = ({ post, liked, edit }) => {
         <StyledCard >
             {
                 <>
-                    <AuthorHeader author={post?.author} subtitle={moment(post?.createdAt).fromNow()} setAnchor={setPostAnchor} />
+                    <AuthorHeader author={post?.author} id={post?.author._id} subtitle={moment(post?.createdAt).fromNow()} setAnchor={setPostAnchor} />
                     <CardMedia
                         loading="lazy"
                         component="img"
@@ -83,7 +84,13 @@ const Post = ({ post, liked, edit }) => {
                                 aria-label="show more"
                             />
                         </IconButton>
-                        <IconButton aria-label="add to favorites" onClick={() => savePost(post?._id)} >
+                        <IconButton aria-label="add to favorites" onClick={async () => {
+                            try {
+                                await savePost(post?._id)
+                            } catch (err) {
+                                dispatch(setAlert(err.response.data.message))
+                            }
+                        }} >
                             <Checkbox icon={<BookmarkBorderIcon />} checkedIcon={<BookmarkIcon />} />
                         </IconButton>
                     </CardActions>

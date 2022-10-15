@@ -58,7 +58,7 @@ const Navbar = () => {
                                 open={Boolean(avatarAnchor)}
                             >
                                 <MenuItem onClick={() => navigate('/profile')} >Profile</MenuItem>
-                                <MenuItem onClick={() => navigate('/')} >Saved</MenuItem>
+                                <MenuItem onClick={() => navigate('/saved-posts')} >Saved</MenuItem>
                                 <MenuItem onClick={logout} >Logout</MenuItem>
                             </Menu>
                             <Menu

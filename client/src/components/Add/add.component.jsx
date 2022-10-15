@@ -4,22 +4,26 @@ import { useState } from "react";
 import { Stack } from "@mui/system";
 import { EmojiEmotions, VideoCameraBack, Image, PersonAdd, DateRange } from "@mui/icons-material";
 import { StyledModal, UserBox } from "./add.styled";
-import { useSelector } from 'react-redux'
-import { IKContext, IKUpload } from 'imagekitio-react';
+import { useDispatch, useSelector } from 'react-redux'
 import { createPost } from "../../api/post";
-import { useLocation } from "react-router";
-import axios from "axios";
-
+import { useLocation, useNavigate } from "react-router";
+import { setAlert } from "../../redux/alert/alert.actions";
 const Add = () => {
+    const navigate = useNavigate()
+    const disptach = useDispatch()
     const [open, setOpen] = useState(false)
     const [postData, setPostData] = useState(null)
     const currentUser = useSelector(state => state.user.currentUser)
-    const handleSubmit = (e) => {
-        console.log("POST SUBMIT")
+    const handleSubmit = async (e) => {
+        e.preventDefault()
         const data = new FormData()
-        data.append("img" , postData.img)
-        axios.post("https://httpbin.org/anything", postData).then(res => console.log(res).catch(err => console.log(err)))
-        // createPost(postData)
+        data.append("postImg", postData.img)
+        data.append("caption", postData.caption)
+        data.append("tags", postData.tags)
+        const response = await createPost(data)
+        disptach(setAlert(response.data.message))
+        navigate("/")
+        setOpen(false)
     }
     const location = useLocation()
     const isAuthPage = () => {
@@ -27,7 +31,7 @@ const Add = () => {
         return false
     }
     return (
-        isAuthPage() ? (
+        isAuthPage() || !currentUser ? (
             null
         ) : (
             <>
@@ -70,7 +74,7 @@ const Add = () => {
                             <Typography>Please Choose an Image</Typography>
                             <Button variant="contained" component="label">
                                 Upload
-                                <input onChange={(e) => setPostData({...postData, img: e.target.files[0]  }) } hidden accept="image/*" type="file" />
+                                <input onChange={(e) => setPostData({ ...postData, img: e.target.files[0] })} hidden accept="image/*" type="file" />
                             </Button>
                             {/* <IKContext
                                 publicKey={'public_RR6bfJBYwkidUbZcaYUvdNfv2Ow='}
@@ -94,7 +98,7 @@ const Add = () => {
                                 onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
                             />
                             <ButtonGroup sx={{ mt: 4 }} fullWidth variant="contained" >
-                                <Button sx={{ width: '90%' }} type='submit' onClick={handleSubmit} >Post</Button>
+                                <Button sx={{ width: '90%' }} onClick={handleSubmit} >Post</Button>
                             </ButtonGroup>
 
                         </Box>

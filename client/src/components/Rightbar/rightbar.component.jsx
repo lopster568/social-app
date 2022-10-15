@@ -1,5 +1,6 @@
 import { Typography, Box, ImageList, ImageListItem, List, ListItem, ListItemAvatar, ListItemText, Divider, ListItemButton } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getSavedPosts } from '../../api/post.js'
 import { TagLink } from "./rightbar.styled.jsx";
@@ -11,13 +12,13 @@ const Rightbar = () => {
         getSavedPosts().then(data => setSavedPosts(data.data))
     }, [])
     const location = useLocation()
+    const currentUser = useSelector(state => state.user.currentUser)
     const isAuthPage = () => {
-
         if (location.pathname === '/login' || location.pathname === '/signup') return true
         return false
     }
     return (
-        isAuthPage() ? (
+        isAuthPage() || !currentUser ? (
             null
         ) : (
             <Box flex={2} p={2} sx={{ display: { xs: "none", sm: "block" } }} >

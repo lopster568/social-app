@@ -15,6 +15,7 @@ API.interceptors.request.use((req) => {
 export const currentUser = () => API.get('/')
 export const loginUser = (credentials) => API.post('/login', credentials)
 export const signUpUser = (details) => API.post('/signup', details)
+export const refreshUser = () => API.post("/refresh")
 export const getUser = (userId) => API.get(`/${userId}`)
 export const updateUser = (details) => API.patch('/update', details)
 export const followUser = (userToBeFollowed) => API.post(`/follow/${userToBeFollowed}`)

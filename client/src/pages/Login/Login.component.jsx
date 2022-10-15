@@ -4,6 +4,7 @@ import { loginUser } from "../../api/user";
 import { setCurrentUser } from "../../redux/user/user.actions";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from 'react-router-dom'
+import { setAlert } from "../../redux/alert/alert.actions";
 
 const Login = () => {
     const dispatch = useDispatch()
@@ -21,7 +22,7 @@ const Login = () => {
             dispatch(setCurrentUser(response.data))
             navigate('/')
         } catch (err) {
-            console.log(err)
+            dispatch(setAlert(err.response.data.message))
         }
     }
 

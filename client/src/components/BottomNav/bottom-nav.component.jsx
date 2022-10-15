@@ -9,6 +9,7 @@ import HomeIcon from '@mui/icons-material/Home'
 import ExploreIcon from '@mui/icons-material/Explore';
 import PeopleIcon from '@mui/icons-material/People'
 import SettingsIcon from '@mui/icons-material/Settings'
+import { useSelector } from 'react-redux';
 
 const StyledBottomNav = styled(BottomNavigation)(({ theme }) => ({
     display: "none",
@@ -19,8 +20,10 @@ const StyledBottomNav = styled(BottomNavigation)(({ theme }) => ({
 }))
 
 function BottomNav() {
+    const currentUser = useSelector(state => state.user.currentUser)
     const navigate = useNavigate()
     return (
+        currentUser ? (
         <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, marginLeft: '0px'  }} elevation={3}>
             <StyledBottomNav sx={{pl: '16px'}} onChange={() => { }}>
                 <BottomNavigationAction
@@ -48,7 +51,9 @@ function BottomNav() {
                     onClick={() => navigate('/settings')}
                 />
             </StyledBottomNav>
-        </Paper>
+        </Paper> ) : (
+            null
+        )
     );
 }
 

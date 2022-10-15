@@ -55,6 +55,16 @@ export const updateUser = async (req, res) => {
     }
 }
 
+export const refreshUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.userId)
+        res.status(200).json(user)
+    } catch (err) {
+        res.status(404).json({ err: err.message })
+    }
+}
+
+
 export const followUser = async (req, res) => {
     try {
         const userToBeFollowed_Unfollowed = await User.findById(req.params.id)

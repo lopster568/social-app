@@ -1,23 +1,23 @@
 //HOOKS AND FUNCTIONS IMPORTS
 import { Routes, Route } from "react-router-dom"
 import { useDispatch } from "react-redux";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { useSelector } from "react-redux";
-
+import { setNotifications } from "./redux/notifications/notifications.actions";
 //MUI IMPORTS
 import { Box, Stack, Snackbar } from "@mui/material";
 import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { setAlert } from "./redux/alert/alert.actions";
+import { closeAlert, setAlert } from "./redux/alert/alert.actions";
 
-//COMPONENT IMPORTS
+//LAZY COMPONENT IMPORTS
 const Sidebar = lazy(() => import("./components/Sidebar/sidebar.component"))
 const Rightbar = lazy(() => import("./components/Rightbar/rightbar.component"))
 const BottomNav = lazy(() => import("./components/BottomNav/bottom-nav.component"))
 const Navbar = lazy(() => import("./components/Navbar/navbar.component"))
 const Add = lazy(() => import("./components/Add/add.component"))
 
-//ROUTE COMPONENTS IMPORTS
+//LAZY ROUTE COMPONENTS IMPORTS
 const Login = lazy(() => import("./pages/Login/Login.component"))
 const SignUp = lazy(() => import("./pages/SignUp/SignUp.component"))
 const Profile = lazy(() => import("./pages/ProfileSettings/profile.component"))
@@ -42,11 +42,15 @@ function App() {
     defaultMatches: true
   });
   const alert = useSelector(state => state.alert)
+  const anchor = {
+    vertical: 'top',
+    horizontal: 'right',
+  }
 
   return (
     <ThemeProvider theme={darkTheme}  >
       <Box bgcolor={'background.default'} color="text.primary" >
-        <Suspense fallback={<div style={{height: '100vh'}} >LOADING...</div>} >
+        <Suspense fallback={<div style={{ height: '100vh' }} >LOADING...</div>} >
           <Navbar />
           <Stack direction="row" spacing={isMobile ? 0 : 2} justifyContent="space-between" >
             <Sidebar />
@@ -72,12 +76,13 @@ function App() {
             <Rightbar />
             <BottomNav />
             <Add />
-            <Snackbar
-              open={Boolean(alert)}
-              onClose={() => dispatch(setAlert(""))}
-              message={alert}
-              autoHideDuration={2000}
+            <Snackbar 
+              open={alert.open}
+              onClose={() => dispatch(closeAlert())}
+              message={alert.message}
+              autoHideDuration={3000}
               severity="info"
+              anchorOrigin={anchor}
             />
           </Stack>
         </Suspense>

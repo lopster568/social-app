@@ -4,8 +4,23 @@ import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import ImageKit from 'imagekit'
+import auth from './middleware/auth.js'
 import { spawn } from 'child_process'
 import multer from 'multer'
+import fs from 'fs'
+import * as fsExtra from "fs-extra";
+import Post from './models/post.js'
+import User from './models/user.js'
+
+import {
+    dirname
+} from 'path';
+import {
+    fileURLToPath
+} from 'url';
+
+const __dirname = dirname(fileURLToPath(
+    import.meta.url));
 
 // ROUTE IMPORTS----------------------------------------------------------
 import userRoutes from './routes/user.js'
@@ -53,14 +68,13 @@ mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true }, (err)
 app.use('/api/user', userRoutes)
 app.use('/api/post', postRoutes)
 
-
 // MULTER--------------------------------------------------------------------
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cd(null, './utils/image')
+        cb(null, './utils/image')
     },
     filename: (req, file, cb) => {
-        cb(null, file.originalName)
+        cb(null, file.originalname)
     }
 })
 
@@ -68,19 +82,58 @@ const upload = multer({
     storage: storage
 })
 
-//PYTHON---------------------------------------------------------------------
-app.get("/python", upload.single("postImg ") ,(req, res) => {
-    console.log(req.file)
+app.post("/api/post", auth, upload.single("postImg"), async (req, res) => {
+    const { caption, tags } = req.body
+
+    const newPost = {
+        caption,
+        tags: (tags.split(" ").join("")).split(","),
+        author: req.userId,
+    }
 
     var data;
-    const python = spawn('python3', ['./utils/blur-recognization.py'])
+    const python = spawn(`python3`, [`./blur-recognization.py`])
     python.stdout.on('data', (returnedData) => {
         console.log('pipe data from script')
         data = returnedData.toString()
     })
-    python.on('close', (code) => {
-        console.log(`child process close all stdio with code ${code}`);
-        // send data to browser
-        res.send(data)
+    python.on('exit', async (code) => {
+        if (code !== 0) console.log("PYTHON ERROR")
+        if (Number(data) === 1) {
+            console.log("is this tru?")
+            fs.readFile(req.file.path, function (err, data) {
+                if (err) throw err;
+                imagekit.upload({
+                    file: data,
+                    fileName: req.file.filename
+                }, async (error, result) => {
+                    if (error) console.log(error);
+                    else {
+                        console.log("SAVING POST")
+                        const newPost = {
+                            caption: req.body.caption,
+                            author: req.userId,
+                            img: result.url,
+                            tags: (req.body.tags.split(" ").join("")).split(",")
+                        }
+                        try {
+                            console.log("SAVING database POST")
+
+                            const createdPost = await Post.create(newPost)
+                            const user = await User.findById(req.userId)
+                            user.posts.push(createdPost)
+                            const savedPost = await user.save()
+                            res.status(200).json({...savedPost, message: "Post Created Successfully"})
+                            fsExtra.emptyDirSync(req.file.destination);
+                        } catch (err) {
+                            res.status(500).json({ message: err.message })
+                        }
+                    }
+                });
+            });
+        } else {
+            res.status(200).json({message: "Image is not blurred enough", blur: 0})
+            fsExtra.emptyDirSync(req.file.destination);
+        }
     });
 })

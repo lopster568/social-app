@@ -22,3 +22,15 @@ export const updateCurrentUser = (user) => ({
     type: UserTypes.UPDATE_CURRENT_USER,
     payload: user
 })
+
+export const refreshUser = () => async(dispatch) => {
+    try {
+        const { data } = await api.refreshUser()
+        dispatch({
+            type: UserTypes.UPDATE_CURRENT_USER,
+            payload: data
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}

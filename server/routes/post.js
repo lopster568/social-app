@@ -9,7 +9,8 @@ const router = express.Router()
 router.get('/', getAllPosts)
 router.get('/feed', auth, getFollowingPosts)
 router.get('/:id', getPost)
-router.post('/', auth, createPost)
+
+// router.post('/', auth, upload.single("postImg"), createPost)
 router.post("/saved", auth, getSavedPosts)
 router.post("/postsby/:id", auth, getPostByUser)
 

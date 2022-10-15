@@ -5,17 +5,19 @@ import { useParams } from "react-router";
 import { getUser, followUser } from "../../api/user";
 import Sidebar from "../../components/Sidebar/sidebar.component";
 import { StyledAvatar } from "./user-profile.styled";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ImageSection from "../../components/ImageSection/image-section.component";
 import { getPostByUser } from "../../api/post";
+import { refreshUser } from "../../redux/user/user.actions";
 
 const UserProfile = () => {
     const params = useParams()
+    const dispatch = useDispatch()
     const [user, setUser] = useState({})
     const [posts, setPosts] = useState([])
     const currentUser = useSelector(state => state.user.currentUser)
     const isFollowed = () => {
-        if (currentUser.following.findIndex(followingId => followingId.toString() === params.id) !== -1) {
+        if (currentUser.following.findIndex(followingId => followingId.toString() === params.id.toString()) !== -1) {
             return true
         }
         return false
@@ -56,9 +58,15 @@ const UserProfile = () => {
                     </Grid>
                     {
                         isFollowed() ? (
-                            <Button variant="outlined" onClick={() => followUser(params.id)} >Unfollow</Button>
+                            <Button variant="outlined" onClick={() => {
+                                followUser(params.id)
+                                dispatch(refreshUser())
+                            }} >Unfollow</Button>
                         ) : (
-                            <Button variant="contained" onClick={() => followUser(params.id)} >Follow</Button>
+                            <Button variant="contained" onClick={() => {
+                                followUser(params.id)
+                                dispatch(refreshUser())
+                            }} >Follow</Button>
                         )
                     }
                 </Stack>
