@@ -2,6 +2,16 @@ import User from '../models/user.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
+import nodemailer from 'nodemailer'
+import sendGridTransport from 'nodemailer-sendgrid-transport'
+
+const trasporter = nodemailer.createTransport(sendGridTransport({
+    auth: {
+        api_key: "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"
+    }
+}))
+
+
 export const loginUser = async (req, res) => {
     const { email, password } = req.body
     try {
@@ -27,6 +37,16 @@ export const registerUser = async (req, res) => {
             email, displayName, username,
             password: hashedPassword
         })
+
+
+
+        // trasporter.sendMail({
+        //     to: createdUser.email,
+        //     from: "aaravbackup568@gmail.com",
+        //     subject: "Account Created",
+        //     html: "<h1>Welcome to BeBlur</h1><p>Hope you enjoy your experience.</p>"
+        // })
+
         //SIGN JWT TOKEN
         const token = jwt.sign({ email: createdUser.email, id: createdUser._id }, ')H@McQfThWmZq4t7w!z%C*F-JaNdRgUk', { expiresIn: '3d' })
         res.status(200).json({ user: createdUser, token })
@@ -76,12 +96,12 @@ export const followUser = async (req, res) => {
             userToBeFollowed_Unfollowed.followers.push(currentUser)
             await userToBeFollowed_Unfollowed.save()
         } else {
-            currentUser.following =  currentUser.following.filter(e => e.toString() !== userToBeFollowed_Unfollowed._id.toString() )
+            currentUser.following = currentUser.following.filter(e => e.toString() !== userToBeFollowed_Unfollowed._id.toString())
             await currentUser.save()
-            userToBeFollowed_Unfollowed.followers =  userToBeFollowed_Unfollowed.followers.filter(e => e.toString() !== userToBeFollowed_Unfollowed._id.toString() )
+            userToBeFollowed_Unfollowed.followers = userToBeFollowed_Unfollowed.followers.filter(e => e.toString() !== userToBeFollowed_Unfollowed._id.toString())
             await userToBeFollowed_Unfollowed.save()
         }
     } catch (err) {
-        res.status(404).json({err: err.message})
+        res.status(404).json({ err: err.message })
     }
 }
