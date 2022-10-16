@@ -10,6 +10,8 @@ import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { closeAlert, setAlert } from "./redux/alert/alert.actions";
 
+import Loading from "./components/LoadingScreen/loadingscreen.component";
+
 //LAZY COMPONENT IMPORTS
 const Sidebar = lazy(() => import("./components/Sidebar/sidebar.component"))
 const Rightbar = lazy(() => import("./components/Rightbar/rightbar.component"))
@@ -50,7 +52,7 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}  >
       <Box bgcolor={'background.default'} color="text.primary" >
-        <Suspense fallback={<div style={{ height: '100vh' }} >LOADING...</div>} >
+        <Suspense fallback={<Loading />} >
           <Navbar />
           <Stack direction="row" spacing={isMobile ? 0 : 2} justifyContent="space-between" >
             <Sidebar />

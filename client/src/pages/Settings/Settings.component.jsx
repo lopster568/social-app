@@ -1,10 +1,15 @@
 import { Stack, Box, Grid, TextField, Paper, Typography, Switch } from "@mui/material";
 import { Container } from "@mui/system";
 import SettingsItem from "../../components/SettingsItem/settings-item.component";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { toggleTheme } from "../../redux/theme/theme.actions";
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 
 const Settings = () => {
+    const dispatch = useDispatch()
+    const mode = useSelector(state => state.theme.mode)
+    const isDark = mode === "dark"
     const [settings, setSettings] = useState({
         discoveryMode: true,
         relevantContent: true,
@@ -27,8 +32,8 @@ const Settings = () => {
                 <Stack spacing={5}>
                     <Box>
                         <Typography variant='h6' fontWeight={100} >App Mode</Typography>
-                        <Grid container spacing={4}  >
-                            <SettingsItem title={'Theme'} subtitle_1={'Set the theme light/dark for the app'}  />
+                        <Grid container spacing={4} >
+                            <SettingsItem title={'Theme'} icon={<DarkModeIcon sx={{fontSize: "40px"}} />} subtitle_1={'Set the theme light/dark for the app'} checked={isDark}  handleChange={() => dispatch(toggleTheme()) } />
                         </Grid>
                     </Box>
                     <Box>
